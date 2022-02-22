@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Hacked Hogwarts Student List</title>
+  </head>
+  <body>
+    <h1>List of students, class 1991</h1>
+
+    <h3>Filter students</h3>
+
+    <section id="filter_interface">
+      <article class="dropdowns">
+        <select name="houses" id="houses">
+          <option data-action="filter" data-filter="*">All houses</option>
+          <option data-action="filter" data-filter="hufflepuff">Hufflepuff</option>
+          <option data-action="filter" data-filter="ravenclaw">Ravenclaw</option>
+          <option data-action="filter" data-filter="slytherin">Slytherin</option>
+          <option data-action="filter" data-filter="gryffindor">Gryffindor</option>
+        </select>
+
+        <select name="expel_status" id="expel_status">
+          <option value="*">Expel status</option>
+          <option value="no_expel">Not expelled</option>
+          <option value="ravenclaw">Expelled</option>
+        </select>
+      </article>
+
+      <form class="search">
+        <input type="text" placeholder="Search.." name="search" id="search_input" />
+        <button id="search_btn">Search</button>
+      </form>
+    </section>
+
+    <table id="students_table">
+      <thead>
+        <tr id="sorting">
+          <th data-action="sort" data-sort-direction="asc" data-sort="firstname">Firstname</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="lastname">Lastname</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="house">House</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="gender">Gender</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- animal template will be copied and inserted here -->
+      </tbody>
+    </table>
+
+    <template id="student">
+      <tr>
+        <td data-field="firstname">Firstname</td>
+        <td data-field="lastname">Lastname</td>
+        <td data-field="house">House</td>
+        <td data-field="gender">Gender</td>
+      </tr>
+    </template>
+
+    <div class="pop_up">
+      <div class="popup_content">
+        <span class="close">&times;</span>
+        <section id="student_popup_info">
+          <img src="" alt="" />
+          <div class="info_section">
+            <h4>Full name:</h4>
+            <h4 id="fullname"></h4>
+
+            <h4>House:</h4>
+            <h4 id="house"></h4>
+          </div>
+        </section>
+        <div class="student_status">
+          <h4>Student status:</h4>
+          <p>Expelled:</p>
+          <p>Part of prefect:</p>
+          <p>Part of inquisitorial squad:</p>
+        </div>
+        <button id="expel_btn">Expel student</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
