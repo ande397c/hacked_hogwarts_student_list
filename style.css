@@ -17,9 +17,17 @@ h1 {
   background-color: #ddd;
 }
 
-#students_table th.sortby {
+#sorting th.sortby {
   text-decoration: underline;
 }
+
+/* #sorting th.sortby[data-sort-direction="asc"]::after {
+  content: "⇓";
+}
+
+#sorting th.sortby[data-sort-direction="desc"]::after {
+  content: "⇑";
+} */
 
 #students_table th {
   padding-top: 12px;
@@ -46,7 +54,7 @@ h1 {
   cursor: pointer;
 }
 
-/*   ............  Pop up X styling ....... */
+/*   ............  Pop up close (X) styling ....... */
 
 .close {
   color: #aaaaaa;
@@ -98,7 +106,7 @@ h1 {
 #student_popup_info {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 2rem;
+  grid-gap: 1rem;
 }
 
 #expel_btn {
@@ -107,13 +115,14 @@ h1 {
   right: 20px;
 }
 
-/* .info_section {
-  margin-top: 1rem;
+.info_section {
+  margin-top: 0.5rem;
 }
 
 .info_section h4 {
   margin: 0.5rem;
-} */
+  font-size: 1.2rem;
+}
 
 .student_status {
   padding: 10px;
@@ -127,25 +136,52 @@ h1 {
   margin: 0 0 0.5rem 0;
 }
 
+#fullname {
+  font-size: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.student_status p {
+  font-size: 1.1rem;
+}
+
 /* ............  Dropdown ................ */
-
-option {
-  font-size: 18px;
-  background-color: #ffffff;
+.dropdown_menu {
+  position: relative;
+  display: inline-block;
 }
 
-option:before {
-  content: ">";
-  font-size: 20px;
+.dropbtn {
+  cursor: pointer;
+}
+
+.dropdown-content {
   display: none;
-  padding-right: 10px;
-  padding-left: 5px;
-  color: #fff;
+  position: absolute;
+  background-color: white;
+  width: 100px;
+  z-index: 1;
+  text-align: left;
 }
 
-option:hover:before {
-  display: inline;
+.flex {
+  display: flex;
+  flex-direction: column;
 }
+
+.filterHouse {
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+  font-size: 16px;
+}
+
+.filterHouse:hover {
+  background-color: rgba(201, 193, 193, 0.568);
+}
+/* ............  Interface ................ */
 
 #filter_interface {
   display: flex;

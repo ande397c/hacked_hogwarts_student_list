@@ -17,27 +17,36 @@ const Student = {
 };
 
 function setup() {
-  const popUp = document.querySelector(".pop_up");
-  popUp.style.display = "none";
   document.querySelector(".close").addEventListener("click", closePopUp);
 
+  // Sort when th elements are clicked.
   let allThElements = document.querySelectorAll("th");
-
-  let allOptions = document.querySelectorAll("#houses option");
-
   allThElements.forEach((ThElement) => {
     ThElement.addEventListener("click", sort);
   });
 
-  allOptions.forEach((option) => {
-    option.addEventListener("click", filter);
+  // Show dropdown content when dropdown is clicked
+  document.querySelector(".dropdown_menu").addEventListener("click", () => {
+    document.querySelector(".dropdown-content").classList.toggle("flex");
   });
 
-  // document.querySelector("#filter_btn").addEventListener("click", filter);
+  // Hide dropdown content if user clicks outside of it
+  document.addEventListener("mouseup", function (e) {
+    const container = document.querySelector(".dropdown-content");
+    if (!container.contains(e.target)) {
+      document.querySelector(".dropdown-content").classList.remove("flex");
+    }
+  });
+  // Filter when button elements are clicked.
+  let allHouseOptions = document.querySelectorAll(".filterHouse");
+  allHouseOptions.forEach((option) => {
+    option.addEventListener("click", filter);
+  });
 
   getJson();
 }
 
+// Get JSON data
 async function getJson() {
   const url = "https://petlatkea.dk/2021/hogwarts/students.json";
   let data = await fetch(url);
@@ -46,50 +55,62 @@ async function getJson() {
   updateObjects(students);
 }
 
-function filter(option) {
-  console.log("filter");
+function sort(ThElement) {
+  let sortBy;
+  let orderBy;
+  let direction = 1;
 
-  let houseVal = option.target.getAttribute("data-filter");
+  sortBy = ThElement.target.getAttribute("data-sort");
+  orderBy = ThElement.target.getAttribute("data-sort-direction");
 
-  if (houseVal === "hufflepuff") {
-    filteredStudents = allStudents.filter(filterHuff);
-  } else if (houseVal === "ravenclaw") {
-    filteredStudents = allStudents.filter(filterRaven);
-  }
-
-  let huffStudents = allStudents.filter(filterHuff);
-  let ravenStudents = allStudents.filter(filterRaven);
-  console.log("huffstudents:", huffStudents);
-  console.log("ravenstudents:", ravenStudents);
-  displayList(filteredStudents);
-}
-
-function sort(ThElement, sortData) {
   this.classList.toggle("sortby");
 
-  sortData = ThElement.target.getAttribute("data-sort");
-  console.log(sortData);
-  let directionWay = this.dataset.sortDirection;
-
-  let directionControl = () => {
-    if (directionWay === "asc") {
-      return "decs";
-    } else {
-      return "asc";
-    }
-  };
-
-  console.log(directionControl());
-
-  if (sortData === "firstname") {
-    filteredStudents.sort(compareFirstName);
-  } else if (sortData === "lastname") {
-    filteredStudents.sort(compareLastName);
-  } else if (sortData === "house") {
-    filteredStudents.sort(compareHouse);
+  if (orderBy === "asc") {
+    ThElement.target.dataset.sortDirection = "desc";
+  } else {
+    ThElement.target.dataset.sortDirection = "asc";
   }
+
+  if (orderBy === "asc") {
+    direction = 1;
+  } else {
+    direction = -1;
+  }
+
+  console.log(sortBy);
+  console.log(orderBy);
+
+  filteredStudents.sort(compareProperty);
   displayList(filteredStudents);
-  // console.log(filteredStudents);
+
+  function compareProperty(a, b) {
+    if (a[sortBy] < b[sortBy]) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+}
+
+function filter(option) {
+  let filterChoice = option.target.getAttribute("data-filter");
+  console.log(filterChoice);
+
+  if (filterChoice != "*") {
+    filteredStudents = allStudents.filter(StudentHouse);
+  } else {
+    filteredStudents = allStudents;
+  }
+
+  function StudentHouse(studentInfo) {
+    if (studentInfo.house === filterChoice) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  displayList(filteredStudents);
 }
 
 function updateObjects(students) {
@@ -155,11 +176,11 @@ function updateObjects(students) {
 
     allStudents.push(studentInfo);
   });
-  displayList();
+  displayList(allStudents);
   // console.table(allStudents);
 }
 
-function displayList() {
+function displayList(allStudents) {
   document.querySelector("#students_table tbody").innerHTML = "";
 
   allStudents.forEach(displayStudent);
@@ -192,50 +213,4 @@ function showDetails(details) {
   document.querySelector(".pop_up").querySelector("#fullname").textContent = details.firstName + " " + details.middleName + " " + details.lastName;
   document.querySelector(".pop_up").querySelector("#house").textContent = details.house;
   document.querySelector(".pop_up").querySelector("img").src = details.image;
-}
-
-// ....... Compare functions ..........
-
-function compareFirstName(a, b) {
-  if (a.firstname < b.firstname) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-function compareLastName(a, b) {
-  if (a.lastname < b.lastname) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-function compareHouse(a, b) {
-  if (a.house < b.house) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
-// ....... Filter functions ..........
-
-function filterHuff(studentInfo) {
-  console.log("filterHuff");
-  if (studentInfo.house === "Hufflepuff") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function filterRaven(studentInfo) {
-  console.log("filterRaven");
-  if (studentInfo.house === "Ravenclaw") {
-    return true;
-  } else {
-    return false;
-  }
 }
