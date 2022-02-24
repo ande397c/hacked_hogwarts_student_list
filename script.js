@@ -3,7 +3,6 @@ window.addEventListener("load", setup);
 
 let students;
 let filteredStudents;
-
 let allStudents = [];
 
 const Student = {
@@ -56,11 +55,13 @@ async function getJson() {
 }
 
 function sort(ThElement) {
+  console.log("SORT", ThElement.target);
   let sortBy;
   let orderBy;
   let direction = 1;
 
-  sortBy = ThElement.target.getAttribute("data-sort");
+  sortBy = ThElement.target.dataset.sort;
+  console.log("SORT", sortBy);
   orderBy = ThElement.target.getAttribute("data-sort-direction");
 
   this.classList.toggle("sortby");
@@ -85,9 +86,9 @@ function sort(ThElement) {
 
   function compareProperty(a, b) {
     if (a[sortBy] < b[sortBy]) {
-      return -1;
+      return -1 * direction;
     } else {
-      return 1;
+      return 1 * direction;
     }
   }
 }
