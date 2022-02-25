@@ -14,35 +14,38 @@
 
     <section id="filter_interface">
       <article class="dropdowns">
-        <div class="dropdown_menu">
+        <div class="dropdown_house">
           <button class="dropbtn">Filter by house</button>
           <div class="dropdown-content">
-            <button class="filterHouse" data-action="filter" data-filter="Gryffindor">Gryffindor</button>
-            <button class="filterHouse" data-action="filter" data-filter="Slytherin">Slytherin</button>
-            <button class="filterHouse" data-action="filter" data-filter="Hufflepuff">Hufflepuff</button>
-            <button class="filterHouse" data-action="filter" data-filter="Ravenclaw">Ravenclaw</button>
-            <button class="filterHouse" data-action="filter" data-filter="*">All houses</button>
+            <button class="filter_house" data-action="filter" data-filter="Gryffindor">Gryffindor</button>
+            <button class="filter_house" data-action="filter" data-filter="Slytherin">Slytherin</button>
+            <button class="filter_house" data-action="filter" data-filter="Hufflepuff">Hufflepuff</button>
+            <button class="filter_house" data-action="filter" data-filter="Ravenclaw">Ravenclaw</button>
+            <button class="filter_house" data-action="filter" data-filter="*">All houses</button>
           </div>
         </div>
 
-        <div class="dropdown_menu">
-          <button class="dropbtn">Filter by expel status</button>
-          <div class="dropdown-content">
-            <button class="filter" data-action="filter" data-filter="cat">Not expelled</button>
-            <button class="filter" data-action="filter" data-filter="dog">Expelled</button>
+        <div class="dropdown_status">
+          <button class="dropbtn">Filter by student status</button>
+          <div class="dropdown-content_status">
+            <button class="filter_status" data-action="filter" data-filter="Not expelled">Not expelled</button>
+            <button class="filter_status" data-action="filter" data-filter="Expelled">Expelled</button>
+            <button class="filter_status" data-action="filter" data-filter="Prefect">Part of prefect</button>
+            <button class="filter_status" data-action="filter" data-filter="Inquisitorial">Part of inquisitorial squad</button>
           </div>
         </div>
       </article>
 
-      <form class="search">
+      <div class="search">
         <input type="text" placeholder="Search.." name="search" id="search_input" />
         <button id="search_btn">Search</button>
-      </form>
+      </div>
     </section>
 
     <table id="students_table">
       <thead>
         <tr id="sorting">
+          <th data-action="sort" data-sort-direction="asc" data-sort="inquisitorial ">Inquisitorial</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="firstName">Firstname</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="lastName">Lastname</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="house">House</th>
@@ -56,6 +59,7 @@
 
     <template id="student">
       <tr>
+        <td data-field="inquisitorial">🔴</td>
         <td data-field="firstname">Firstname</td>
         <td data-field="lastname">Lastname</td>
         <td data-field="house">House</td>

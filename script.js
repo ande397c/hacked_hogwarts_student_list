@@ -4,6 +4,7 @@ window.addEventListener("load", setup);
 let students;
 let filteredStudents;
 let allStudents = [];
+let expelledStudents = [];
 
 const Student = {
   firstName: "",
@@ -13,33 +14,61 @@ const Student = {
   image: "",
   house: "",
   gender: "",
+  bloodStatus: "",
+  inquisitorial: false,
+  id: 0,
+  expelled: false,
 };
 
 function setup() {
+  // Search for student
+  document.querySelector("#search_btn").addEventListener("click", searchStudent);
+
+  // Close pop up when X is clicked
   document.querySelector(".close").addEventListener("click", closePopUp);
 
-  // Sort when th elements are clicked.
-  let allThElements = document.querySelectorAll("th");
-  allThElements.forEach((ThElement) => {
-    ThElement.addEventListener("click", sort);
+  // Show dropdown content when dropdown is clicked
+  document.querySelector(".dropdown_house").addEventListener("click", () => {
+    console.log("flex");
+    document.querySelector(".dropdown-content").classList.toggle("flex");
   });
 
-  // Show dropdown content when dropdown is clicked
-  document.querySelector(".dropdown_menu").addEventListener("click", () => {
-    document.querySelector(".dropdown-content").classList.toggle("flex");
+  document.querySelector(".dropdown_status").addEventListener("click", () => {
+    console.log("flex");
+    document.querySelector(".dropdown-content_status").classList.toggle("flex");
   });
 
   // Hide dropdown content if user clicks outside of it
   document.addEventListener("mouseup", function (e) {
     const container = document.querySelector(".dropdown-content");
     if (!container.contains(e.target)) {
-      document.querySelector(".dropdown-content").classList.remove("flex");
+      container.classList.remove("flex");
     }
   });
+
+  // Hide dropdown content if user clicks outside of it
+  document.addEventListener("mouseup", function (e) {
+    const container_status = document.querySelector(".dropdown-content_status");
+    if (!container_status.contains(e.target)) {
+      container_status.classList.remove("flex");
+    }
+  });
+
   // Filter when button elements are clicked.
-  let allHouseOptions = document.querySelectorAll(".filterHouse");
+  let allHouseOptions = document.querySelectorAll(".filter_house");
   allHouseOptions.forEach((option) => {
-    option.addEventListener("click", filter);
+    option.addEventListener("click", filterHouse);
+  });
+
+  let allStatusOptions = document.querySelectorAll(".filter_status");
+  allStatusOptions.forEach((statusOption) => {
+    statusOption.addEventListener("click", filterStatus);
+  });
+
+  // Sort when th elements are clicked.
+  let allThElements = document.querySelectorAll("th");
+  allThElements.forEach((ThElement) => {
+    ThElement.addEventListener("click", sort);
   });
 
   getJson();
@@ -55,16 +84,10 @@ async function getJson() {
 }
 
 function sort(ThElement) {
-  console.log("SORT", ThElement.target);
-  let sortBy;
-  let orderBy;
   let direction = 1;
 
-  sortBy = ThElement.target.dataset.sort;
-  console.log("SORT", sortBy);
-  orderBy = ThElement.target.getAttribute("data-sort-direction");
-
-  this.classList.toggle("sortby");
+  let sortBy = ThElement.target.dataset.sort;
+  let orderBy = ThElement.target.getAttribute("data-sort-direction");
 
   if (orderBy === "asc") {
     ThElement.target.dataset.sortDirection = "desc";
@@ -93,17 +116,40 @@ function sort(ThElement) {
   }
 }
 
-function filter(option) {
+function filterStatus(statusOption) {
+  console.log("filter");
+  let filterChoice = statusOption.target.getAttribute("data-filter");
+  console.log(filterChoice);
+
+  if (filterChoice != "*") {
+    filteredStudents = expelledStudents.filter(studentStatus);
+  } else {
+    filteredStudents = expelledStudents;
+  }
+
+  function studentStatus(studentInfo) {
+    if (studentInfo.expelled === filterChoice) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  displayList(filteredStudents);
+}
+
+function filterHouse(option) {
+  console.log("filter");
   let filterChoice = option.target.getAttribute("data-filter");
   console.log(filterChoice);
 
   if (filterChoice != "*") {
-    filteredStudents = allStudents.filter(StudentHouse);
+    filteredStudents = allStudents.filter(studentHouse);
   } else {
     filteredStudents = allStudents;
   }
 
-  function StudentHouse(studentInfo) {
+  function studentHouse(studentInfo) {
     if (studentInfo.house === filterChoice) {
       return true;
     } else {
@@ -116,9 +162,9 @@ function filter(option) {
 
 function updateObjects(students) {
   filteredStudents = allStudents;
-  students.forEach((jsonObject) => {
+  students.forEach((jsonObject, i) => {
     const studentInfo = Object.create(Student);
-
+    studentInfo.id = i;
     // Get full name from json data:
     const getfullName = jsonObject.fullname.trim();
 
@@ -196,11 +242,33 @@ function displayStudent(studentInfo) {
   clone.querySelector("[data-field=lastname]").textContent = studentInfo.lastName;
   clone.querySelector("[data-field=house]").textContent = studentInfo.house;
   clone.querySelector("[data-field=gender]").textContent = studentInfo.gender;
-  clone.querySelector("tr").addEventListener("click", () => showDetails(studentInfo));
-  // clone.querySelector("[data-field=lastname]").addEventListener("click", () => showDetails(studentInfo));
+
+  // Click for details
+  clone.querySelector("[data-field=firstname]").addEventListener("click", () => showDetails(studentInfo));
+  clone.querySelector("[data-field=lastname]").addEventListener("click", () => showDetails(studentInfo));
+
+  if (studentInfo.inquisitorial) {
+    clone.querySelector("[data-field=inquisitorial]").textContent = "🔴";
+  } else {
+    clone.querySelector("[data-field=inquisitorial]").textContent = "⚫️";
+  }
+
+  clone.querySelector("[data-field=inquisitorial]").addEventListener("click", () => assignInquisitorial(studentInfo));
 
   // append clone to list
   document.querySelector("#students_table tbody").appendChild(clone);
+
+  return studentInfo;
+}
+
+function assignInquisitorial(studentInfo) {
+  if (studentInfo.inquisitorial) {
+    studentInfo.inquisitorial = false;
+  } else {
+    studentInfo.inquisitorial = true;
+  }
+  console.log(studentInfo.inquisitorial);
+  displayList(filteredStudents);
 }
 
 function closePopUp() {
@@ -208,10 +276,39 @@ function closePopUp() {
 }
 
 function showDetails(details) {
+  //console.log("showDetails", details);
   document.querySelector(".pop_up").style.display = "block";
   window.scrollTo(0, 0);
 
   document.querySelector(".pop_up").querySelector("#fullname").textContent = details.firstName + " " + details.middleName + " " + details.lastName;
   document.querySelector(".pop_up").querySelector("#house").textContent = details.house;
   document.querySelector(".pop_up").querySelector("img").src = details.image;
+
+  // Hide dropdown content if user clicks outside of it
+  document.addEventListener("mouseup", function (e) {
+    const popUpContainer = document.querySelector(".popup_content");
+    if (!popUpContainer.contains(e.target)) {
+      closePopUp();
+    }
+  });
+
+  document.querySelector("#expel_btn").addEventListener("click", expelStudent);
+
+  function expelStudent() {
+    closePopUp();
+    const studentToBeExpelled = (element) => element.id === details.id;
+    const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
+    expelledStudents.push(allStudents[indexOfStudentToExpel]);
+    allStudents.splice(indexOfStudentToExpel, 1);
+    console.log("expelledStudents", expelledStudents);
+    displayList(allStudents);
+  }
+}
+
+function searchStudent() {
+  console.log("searchStudent");
+
+  const inputVal = document.querySelector("#search_input").value;
+
+  console.log(inputVal);
 }

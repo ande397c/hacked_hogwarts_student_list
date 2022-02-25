@@ -9,6 +9,12 @@ h1 {
 
 /*   ............  table styling ....... */
 
+[data-field="inquisitorial"] {
+  text-align: center;
+  cursor: pointer;
+  width: 20px;
+}
+
 #students_table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -20,6 +26,10 @@ h1 {
 #sorting th.sortby {
   text-decoration: underline;
 }
+
+/* #sorting th {
+  filter: grayscale(100%);
+} */
 
 /* #sorting th.sortby[data-sort-direction="asc"]::after {
   content: "⇓";
@@ -164,12 +174,22 @@ h1 {
   text-align: left;
 }
 
+.dropdown-content_status {
+  display: none;
+  position: absolute;
+  background-color: white;
+  width: 160px;
+  z-index: 1;
+  text-align: left;
+}
+
 .flex {
   display: flex;
   flex-direction: column;
 }
 
-.filterHouse {
+.filter_house,
+.filter_status {
   background-color: white;
   border: none;
   cursor: pointer;
@@ -181,7 +201,7 @@ h1 {
 .filterHouse:hover {
   background-color: rgba(201, 193, 193, 0.568);
 }
-/* ............  Interface ................ */
+/* ............  Filter Interface ................ */
 
 #filter_interface {
   display: flex;
@@ -196,4 +216,8 @@ h1 {
 
 #filter_btn {
   margin-left: 1.5rem;
+}
+
+.search {
+  display: flex;
 }
