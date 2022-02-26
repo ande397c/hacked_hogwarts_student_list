@@ -28,9 +28,9 @@
         <div class="dropdown_status">
           <button class="dropbtn">Filter by student status</button>
           <div class="dropdown-content_status">
-            <button class="filter_status" data-action="filter" data-filter="Not expelled">Not expelled</button>
+            <button class="filter_status" data-action="filter" data-filter="*">Not expelled</button>
             <button class="filter_status" data-action="filter" data-filter="Expelled">Expelled</button>
-            <button class="filter_status" data-action="filter" data-filter="Prefect">Part of prefect</button>
+            <button class="filter_status" data-action="filter" data-filter="Prefect">Prefects</button>
             <button class="filter_status" data-action="filter" data-filter="Inquisitorial">Part of inquisitorial squad</button>
           </div>
         </div>
@@ -45,6 +45,7 @@
     <table id="students_table">
       <thead>
         <tr id="sorting">
+          <th data-action="sort" data-sort-direction="asc" data-sort="prefect">Prefect</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="inquisitorial ">Inquisitorial</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="firstName">Firstname</th>
           <th data-action="sort" data-sort-direction="asc" data-sort="lastName">Lastname</th>
@@ -59,6 +60,7 @@
 
     <template id="student">
       <tr>
+        <td data-field="prefect">⭐</td>
         <td data-field="inquisitorial">🔴</td>
         <td data-field="firstname">Firstname</td>
         <td data-field="lastname">Lastname</td>
@@ -87,6 +89,10 @@
         </div>
         <button id="expel_btn">Expel student</button>
       </div>
+    </div>
+
+    <div id="messeage_board" class="cta bounce hide">
+      <p id="messeage"></p>
     </div>
 
     <script src="script.js"></script>

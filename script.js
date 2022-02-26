@@ -5,6 +5,8 @@ let students;
 let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
+let inquisitorialSquad = [];
+let prefects = [];
 
 const Student = {
   firstName: "",
@@ -29,12 +31,10 @@ function setup() {
 
   // Show dropdown content when dropdown is clicked
   document.querySelector(".dropdown_house").addEventListener("click", () => {
-    console.log("flex");
     document.querySelector(".dropdown-content").classList.toggle("flex");
   });
-
+  // Show dropdown content when dropdown is clicked
   document.querySelector(".dropdown_status").addEventListener("click", () => {
-    console.log("flex");
     document.querySelector(".dropdown-content_status").classList.toggle("flex");
   });
 
@@ -54,12 +54,12 @@ function setup() {
     }
   });
 
-  // Filter when button elements are clicked.
+  // Filter house  when button elements are clicked.
   let allHouseOptions = document.querySelectorAll(".filter_house");
   allHouseOptions.forEach((option) => {
     option.addEventListener("click", filterHouse);
   });
-
+  // Filter status when button elements are clicked.
   let allStatusOptions = document.querySelectorAll(".filter_status");
   allStatusOptions.forEach((statusOption) => {
     statusOption.addEventListener("click", filterStatus);
@@ -117,29 +117,32 @@ function sort(ThElement) {
 }
 
 function filterStatus(statusOption) {
-  console.log("filter");
   let filterChoice = statusOption.target.getAttribute("data-filter");
   console.log(filterChoice);
 
-  if (filterChoice != "*") {
-    filteredStudents = expelledStudents.filter(studentStatus);
-  } else {
+  if (filterChoice === "*") {
+    filteredStudents = allStudents;
+  } else if (filterChoice === "Expelled") {
     filteredStudents = expelledStudents;
+  } else if (filterChoice === "Inquisitorial") {
+    filteredStudents = inquisitorialSquad;
+  } else if (filterChoice === "Prefect") {
+    filteredStudents = prefects;
   }
 
-  function studentStatus(studentInfo) {
-    if (studentInfo.expelled === filterChoice) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // function studentStatus(studentInfo) {
+  //   if (studentInfo.expelled === filterChoice) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+
+  // }
 
   displayList(filteredStudents);
 }
 
 function filterHouse(option) {
-  console.log("filter");
   let filterChoice = option.target.getAttribute("data-filter");
   console.log(filterChoice);
 
@@ -253,7 +256,14 @@ function displayStudent(studentInfo) {
     clone.querySelector("[data-field=inquisitorial]").textContent = "⚫️";
   }
 
-  clone.querySelector("[data-field=inquisitorial]").addEventListener("click", () => assignInquisitorial(studentInfo));
+  if (studentInfo.prefect) {
+    clone.querySelector("[data-field=prefect]").textContent = "⭐";
+  } else {
+    clone.querySelector("[data-field=prefect]").textContent = "☆";
+  }
+
+  clone.querySelector("[data-field=inquisitorial]").addEventListener("click", () => assignAsInquisitorial(studentInfo));
+  clone.querySelector("[data-field=prefect]").addEventListener("click", () => assignAsPrefect(studentInfo));
 
   // append clone to list
   document.querySelector("#students_table tbody").appendChild(clone);
@@ -261,18 +271,42 @@ function displayStudent(studentInfo) {
   return studentInfo;
 }
 
-function assignInquisitorial(studentInfo) {
+function assignAsPrefect(studentInfo) {
+  if (studentInfo.prefect) {
+    studentInfo.prefect = false;
+  } else {
+    studentInfo.prefect = true;
+  }
+  prefects.push(studentInfo);
+  console.log(prefects);
+  displayList(filteredStudents);
+}
+
+function assignAsInquisitorial(studentInfo) {
   if (studentInfo.inquisitorial) {
     studentInfo.inquisitorial = false;
   } else {
     studentInfo.inquisitorial = true;
   }
-  console.log(studentInfo.inquisitorial);
+  inquisitorialSquad.push(studentInfo);
   displayList(filteredStudents);
 }
 
-function closePopUp() {
+function closePopUp(expelledStudents) {
   document.querySelector(".pop_up").style.display = "none";
+}
+
+function displayMessage() {
+  const message = document.querySelector("#messeage_board");
+  message.className = "cta show";
+  document.querySelector("#messeage").textContent = `${expelledStudents.firstName} has been succesfully expelled!`;
+
+  setTimeout(removeMessage, 3000);
+
+  function removeMessage() {
+    message.className = "cta hide";
+    console.log(expelledStudents);
+  }
 }
 
 function showDetails(details) {
@@ -295,13 +329,15 @@ function showDetails(details) {
   document.querySelector("#expel_btn").addEventListener("click", expelStudent);
 
   function expelStudent() {
-    closePopUp();
+    displayMessage();
     const studentToBeExpelled = (element) => element.id === details.id;
     const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
     expelledStudents.push(allStudents[indexOfStudentToExpel]);
     allStudents.splice(indexOfStudentToExpel, 1);
     console.log("expelledStudents", expelledStudents);
+    console.log("object:", details);
     displayList(allStudents);
+    closePopUp(expelledStudents);
   }
 }
 

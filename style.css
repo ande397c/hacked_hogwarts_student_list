@@ -15,6 +15,12 @@ h1 {
   width: 20px;
 }
 
+[data-field="prefect"] {
+  text-align: center;
+  cursor: pointer;
+  width: 20px;
+}
+
 #students_table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
@@ -163,6 +169,10 @@ h1 {
 
 .dropbtn {
   cursor: pointer;
+  background-color: white;
+  outline: none;
+  border: 1px solid black;
+  padding: 10px;
 }
 
 .dropdown-content {
@@ -198,7 +208,11 @@ h1 {
   font-size: 16px;
 }
 
-.filterHouse:hover {
+.filter_house:hover {
+  background-color: rgba(201, 193, 193, 0.568);
+}
+
+.filter_status:hover {
   background-color: rgba(201, 193, 193, 0.568);
 }
 /* ............  Filter Interface ................ */
@@ -220,4 +234,37 @@ h1 {
 
 .search {
   display: flex;
+}
+
+/******** Feedback **********/
+
+.cta {
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  width: 210px;
+  height: 70px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  transition: all 0.5s;
+  background-color: #4992a3;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 18px;
+  margin-right: 1rem;
+  /* box-shadow: 0px 5px 12px 1px rgba(0, 0, 0, 0.61); */
+  text-align: center;
+  display: block;
+}
+
+.hide {
+  opacity: 0;
+  right: -100%;
+}
+
+#messeage {
+  margin: 0;
+  padding-top: 0.5rem;
 }
