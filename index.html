@@ -38,7 +38,7 @@
 
       <div class="search">
         <input type="text" placeholder="Search.." name="search" id="search_input" />
-        <button id="search_btn">Search</button>
+        <button id="clear_btn">X</button>
       </div>
     </section>
 
@@ -57,7 +57,7 @@
         <!-- animal template will be copied and inserted here -->
       </tbody>
     </table>
-
+    <div id="error_empty"><h2></h2></div>
     <template id="student">
       <tr>
         <td data-field="prefect">⭐</td>
@@ -83,9 +83,9 @@
         </section>
         <div class="student_status">
           <h4>Student status:</h4>
-          <p>Expelled:</p>
-          <p>Part of prefect:</p>
-          <p>Part of inquisitorial squad:</p>
+          <p id="expel_stat">Expelled:</p>
+          <p id="prefect_stat">Part of prefect:</p>
+          <p id="squad_stat">Part of inquisitorial squad:</p>
         </div>
         <button id="expel_btn">Expel student</button>
       </div>

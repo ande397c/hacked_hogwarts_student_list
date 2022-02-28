@@ -64,10 +64,12 @@ h1 {
 #students_table th {
   border: 1px solid #ddd;
   padding: 8px;
+  text-align: center;
 }
 
 #students_table tr {
   cursor: pointer;
+  text-align: center;
 }
 
 /*   ............  Pop up close (X) styling ....... */
@@ -243,7 +245,7 @@ h1 {
   top: 20px;
   right: 10px;
   width: 210px;
-  height: 70px;
+  height: 86px;
   z-index: 99;
   border: none;
   outline: none;
@@ -257,6 +259,7 @@ h1 {
   /* box-shadow: 0px 5px 12px 1px rgba(0, 0, 0, 0.61); */
   text-align: center;
   display: block;
+  padding-top: 0rem;
 }
 
 .hide {
@@ -266,5 +269,11 @@ h1 {
 
 #messeage {
   margin: 0;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+#error_empty h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  padding-top: 1rem;
 }

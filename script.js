@@ -6,7 +6,7 @@ let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
 let inquisitorialSquad = [];
-let prefects = [];
+// let prefects = [];
 
 const Student = {
   firstName: "",
@@ -20,11 +20,15 @@ const Student = {
   inquisitorial: false,
   id: 0,
   expelled: false,
+  prefect: false,
 };
 
 function setup() {
   // Search for student
-  document.querySelector("#search_btn").addEventListener("click", searchStudent);
+  document.querySelector("#clear_btn").addEventListener("click", () => {
+    document.querySelector("#search_input").value = "";
+  });
+  document.querySelector("#search_input").addEventListener("input", searchStudent);
 
   // Close pop up when X is clicked
   document.querySelector(".close").addEventListener("click", closePopUp);
@@ -118,25 +122,23 @@ function sort(ThElement) {
 
 function filterStatus(statusOption) {
   let filterChoice = statusOption.target.getAttribute("data-filter");
-  console.log(filterChoice);
+
+  if (expelledStudents.length === 0 && filterChoice === "Expelled") {
+    document.querySelector("#error_empty h2").innerHTML = "No students have been expelled yet";
+  } else {
+    document.querySelector("#error_empty").style.display = "none";
+  }
 
   if (filterChoice === "*") {
     filteredStudents = allStudents;
   } else if (filterChoice === "Expelled") {
     filteredStudents = expelledStudents;
   } else if (filterChoice === "Inquisitorial") {
-    filteredStudents = inquisitorialSquad;
-  } else if (filterChoice === "Prefect") {
-    filteredStudents = prefects;
+    filteredStudents = inquisitors;
   }
 
-  // function studentStatus(studentInfo) {
-  //   if (studentInfo.expelled === filterChoice) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-
+  // else if (filterChoice === "Prefect") {
+  //   filteredStudents = prefects;
   // }
 
   displayList(filteredStudents);
@@ -272,40 +274,97 @@ function displayStudent(studentInfo) {
 }
 
 function assignAsPrefect(studentInfo) {
+  console.log(studentInfo);
   if (studentInfo.prefect) {
     studentInfo.prefect = false;
   } else {
-    studentInfo.prefect = true;
+    tryToMakeStudentPrefect(studentInfo);
   }
-  prefects.push(studentInfo);
-  console.log(prefects);
+
   displayList(filteredStudents);
+}
+
+function tryToMakeStudentPrefect(selectedStudent) {
+  const prefects = allStudents.filter((student) => student.prefect);
+  const numberOfPrefects = prefects.length;
+  const otherPrefect = prefects.filter((student) => student.house === selectedStudent.house);
+  console.log("prefects", prefects);
+  console.log("others", otherPrefect);
+
+  if (otherPrefect.length >= 2) {
+    alert("There can only be 2 prefects per house");
+    prefects.shift();
+  } else {
+    selectedStudent.prefect = true;
+  }
 }
 
 function assignAsInquisitorial(studentInfo) {
   if (studentInfo.inquisitorial) {
     studentInfo.inquisitorial = false;
   } else {
+    tryToMakeStudentInquisitorial(studentInfo);
+    // inquisitorialSquad.push(studentInfo);
+  }
+
+  displayList(filteredStudents);
+}
+
+function tryToMakeStudentInquisitorial(selectedStudent) {
+  const inquisitors = allStudents.filter((studentInfo) => studentInfo.inquisitorial);
+  const numberOfInquisitors = inquisitors.length;
+  console.log(inquisitors);
+  const other = inquisitors.filter((studentInfo) => studentInfo.house === selectedStudent.house);
+
+  if (other !== undefined) {
+    console.log("There can be only one winner of each house");
+    removeOther(other);
+  } else if (numberOfInquisitors >= 2) {
+    console.log("There can only be two winners!");
+    removeAOrB(inquisitors[0], inquisitors[1]);
+  } else {
+    makeWinner(selectedStudent);
+  }
+
+  // Testing:
+
+  makeWinner(selectedStudent);
+
+  function removeOther(other) {
+    removeWinner(other);
+    makeWinner(selectedStudent);
+  }
+
+  function removeAOrB(inquisitorA, inquisitorB) {
+    removeWinner(inquisitorA);
+    makeWinner(selectedStudent);
+
+    removeWinner(inquisitorB);
+    makeWinner(selectedStudent);
+  }
+
+  function removeWinner(studentInfo) {
+    studentInfo.inquisitorial = false;
+  }
+
+  function makeWinner(studentInfo) {
     studentInfo.inquisitorial = true;
   }
-  inquisitorialSquad.push(studentInfo);
-  displayList(filteredStudents);
 }
 
 function closePopUp(expelledStudents) {
   document.querySelector(".pop_up").style.display = "none";
 }
 
-function displayMessage() {
+function displayMessage(details) {
   const message = document.querySelector("#messeage_board");
   message.className = "cta show";
-  document.querySelector("#messeage").textContent = `${expelledStudents.firstName} has been succesfully expelled!`;
+  document.querySelector("#messeage").textContent = `${details.firstName} ${details.lastName} has been succesfully expelled!`;
 
   setTimeout(removeMessage, 3000);
 
   function removeMessage() {
     message.className = "cta hide";
-    console.log(expelledStudents);
   }
 }
 
@@ -329,22 +388,51 @@ function showDetails(details) {
   document.querySelector("#expel_btn").addEventListener("click", expelStudent);
 
   function expelStudent() {
-    displayMessage();
+    document.querySelector("#expel_btn").removeEventListener("click", expelStudent);
+    displayMessage(details);
     const studentToBeExpelled = (element) => element.id === details.id;
+
     const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
+
     expelledStudents.push(allStudents[indexOfStudentToExpel]);
+
     allStudents.splice(indexOfStudentToExpel, 1);
+
     console.log("expelledStudents", expelledStudents);
     console.log("object:", details);
     displayList(allStudents);
     closePopUp(expelledStudents);
   }
+
+  checkStatus(details);
+
+  return details;
 }
 
-function searchStudent() {
+function checkStatus(selectedStudent) {
+  // let studentDetails = showDetails(info);
+  console.log("Student Details:", selectedStudent);
+
+  // Check status of selected student
+  if (expelledStudents.includes(selectedStudent)) {
+    document.querySelector("#expel_stat").style.color = "red";
+  } else if (inquisitorialSquad.includes(selectedStudent)) {
+    document.querySelector("#squad_stat").style.color = "red";
+  } else if (prefects.includes(selectedStudent)) {
+    document.querySelector("#prefect_stat").style.color = "red";
+  }
+}
+
+function searchStudent(evt) {
   console.log("searchStudent");
 
   const inputVal = document.querySelector("#search_input").value;
 
-  console.log(inputVal);
+  // write to the list with only those elemnts in the allAnimals array that has properties containing the search frase
+  displayList(
+    allStudents.filter((elm) => {
+      // comparing in uppercase so that m is the same as M
+      return elm.firstName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.lastName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.house.toUpperCase().includes(evt.target.value.toUpperCase());
+    })
+  );
 }
