@@ -7,6 +7,54 @@ h1 {
   text-align: center;
 }
 
+/*   ............  cards styling ....... */
+
+#house_cards {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.card {
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.card img {
+  max-width: 6rem;
+  max-height: 6rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+#gryff_total,
+#slyth_total,
+#huff_total,
+#raven_total {
+  text-align: center;
+}
+
+/*    ........... List information styling ........... */
+
+#list_info {
+  padding: 0.8rem;
+  border: 1px solid black;
+  margin-top: 3rem;
+  font-size: 1.1rem;
+}
+
+#list_info h3 {
+  text-align: center;
+  margin: 0;
+}
+
+.numbers {
+  display: flex;
+  justify-content: space-between;
+}
 /*   ............  table styling ....... */
 
 [data-field="inquisitorial"] {

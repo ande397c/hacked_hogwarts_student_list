@@ -2,17 +2,19 @@
 window.addEventListener("load", setup);
 
 let students;
+let families;
+
 let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
-let inquisitorialSquad = [];
-// let prefects = [];
+// let inquisitorialSquad = [];
 
 const Student = {
   firstName: "",
   lastName: "",
   middleName: "",
   nickName: "",
+  bloodStatus: "",
   image: "",
   house: "",
   gender: "",
@@ -75,16 +77,40 @@ function setup() {
     ThElement.addEventListener("click", sort);
   });
 
-  getJson();
+  document.querySelector("#total_not_expelled").textContent = `34 student(s) have not been expelled`;
+
+  getStudents();
 }
 
 // Get JSON data
-async function getJson() {
-  const url = "https://petlatkea.dk/2021/hogwarts/students.json";
-  let data = await fetch(url);
+async function getStudents() {
+  const url1 = "https://petlatkea.dk/2021/hogwarts/students.json";
+  let data = await fetch(url1);
   students = await data.json();
-  console.log(students);
+  // console.log(students);
   updateObjects(students);
+  getFamilies();
+}
+
+async function getFamilies() {
+  const url2 = "https://petlatkea.dk/2021/hogwarts/families.json";
+  let data = await fetch(url2);
+  families = await data.json();
+  console.log(families);
+  getBloodStatus(families);
+}
+
+function getBloodStatus(families) {
+  allStudents.forEach((student, index) => {
+    if (families.half.includes(student.lastName)) {
+      student.bloodStatus = "half-blood";
+    } else if (families.pure.includes(student.lastName)) {
+      student.bloodStatus = "pure-blood";
+    } else {
+      student.bloodStatus = "muggle";
+    }
+    console.log(student);
+  });
 }
 
 function sort(ThElement) {
@@ -124,7 +150,15 @@ function filterStatus(statusOption) {
   let filterChoice = statusOption.target.getAttribute("data-filter");
 
   if (expelledStudents.length === 0 && filterChoice === "Expelled") {
+    document.querySelector("#error_empty").style.display = "block";
     document.querySelector("#error_empty h2").innerHTML = "No students have been expelled yet";
+  } else {
+    document.querySelector("#error_empty").style.display = "none";
+  }
+
+  if (allStudents.filter((student) => student.prefect).length === 0 && filterChoice === "Prefect") {
+    document.querySelector("#error_empty").style.display = "block";
+    document.querySelector("#error_empty h2").innerHTML = "No students have been selected prefects yet";
   } else {
     document.querySelector("#error_empty").style.display = "none";
   }
@@ -134,12 +168,10 @@ function filterStatus(statusOption) {
   } else if (filterChoice === "Expelled") {
     filteredStudents = expelledStudents;
   } else if (filterChoice === "Inquisitorial") {
-    filteredStudents = inquisitors;
+    filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial);
+  } else if (filterChoice === "Prefect") {
+    filteredStudents = allStudents.filter((student) => student.prefect);
   }
-
-  // else if (filterChoice === "Prefect") {
-  //   filteredStudents = prefects;
-  // }
 
   displayList(filteredStudents);
 }
@@ -154,6 +186,8 @@ function filterHouse(option) {
     filteredStudents = allStudents;
   }
 
+  console.log(allStudents.filter(studentHouse));
+
   function studentHouse(studentInfo) {
     if (studentInfo.house === filterChoice) {
       return true;
@@ -163,6 +197,15 @@ function filterHouse(option) {
   }
 
   displayList(filteredStudents);
+  // displayTotalStudentNumber();
+}
+
+function displayTotalStudentNumber() {
+  console.log("Display totalt student number");
+  const totalGryff = document.querySelector("#gryff_total");
+  const totalSlyth = document.querySelector("#slyth_total");
+  const totalHuff = document.querySelector("#huff_total");
+  const totalRaven = document.querySelector("#raven_total");
 }
 
 function updateObjects(students) {
@@ -286,17 +329,17 @@ function assignAsPrefect(studentInfo) {
 
 function tryToMakeStudentPrefect(selectedStudent) {
   const prefects = allStudents.filter((student) => student.prefect);
-  const numberOfPrefects = prefects.length;
+  // const numberOfPrefects = prefects.length;
   const otherPrefect = prefects.filter((student) => student.house === selectedStudent.house);
-  console.log("prefects", prefects);
-  console.log("others", otherPrefect);
 
   if (otherPrefect.length >= 2) {
     alert("There can only be 2 prefects per house");
     prefects.shift();
   } else {
     selectedStudent.prefect = true;
+    prefects.push(selectedStudent);
   }
+  console.log("prefects", prefects);
 }
 
 function assignAsInquisitorial(studentInfo) {
@@ -312,48 +355,22 @@ function assignAsInquisitorial(studentInfo) {
 
 function tryToMakeStudentInquisitorial(selectedStudent) {
   const inquisitors = allStudents.filter((studentInfo) => studentInfo.inquisitorial);
-  const numberOfInquisitors = inquisitors.length;
-  console.log(inquisitors);
-  const other = inquisitors.filter((studentInfo) => studentInfo.house === selectedStudent.house);
+  // const otherInquisitor = inquisitors.filter((studentInfo) => studentInfo.house === selectedStudent.house);
 
-  if (other !== undefined) {
-    console.log("There can be only one winner of each house");
-    removeOther(other);
-  } else if (numberOfInquisitors >= 2) {
-    console.log("There can only be two winners!");
-    removeAOrB(inquisitors[0], inquisitors[1]);
+  if (selectedStudent.bloodStatus != "pure-blood" && selectedStudent.house != "Slytherin") {
+    alert("Only pure-blooded students from house Slytherin can be added!");
+    inquisitors.shift();
   } else {
-    makeWinner(selectedStudent);
+    selectedStudent.inquisitorial = true;
+    inquisitors.push(selectedStudent);
   }
-
-  // Testing:
-
-  makeWinner(selectedStudent);
-
-  function removeOther(other) {
-    removeWinner(other);
-    makeWinner(selectedStudent);
-  }
-
-  function removeAOrB(inquisitorA, inquisitorB) {
-    removeWinner(inquisitorA);
-    makeWinner(selectedStudent);
-
-    removeWinner(inquisitorB);
-    makeWinner(selectedStudent);
-  }
-
-  function removeWinner(studentInfo) {
-    studentInfo.inquisitorial = false;
-  }
-
-  function makeWinner(studentInfo) {
-    studentInfo.inquisitorial = true;
-  }
+  console.log(inquisitors);
 }
 
-function closePopUp(expelledStudents) {
+function closePopUp() {
   document.querySelector(".pop_up").style.display = "none";
+  document.querySelector("#total_expelled").textContent = `${expelledStudents.length} student(s) have been expelled`;
+  document.querySelector("#total_not_expelled").textContent = `${allStudents.length} student(s) have not been expelled`;
 }
 
 function displayMessage(details) {
@@ -390,6 +407,7 @@ function showDetails(details) {
   function expelStudent() {
     document.querySelector("#expel_btn").removeEventListener("click", expelStudent);
     displayMessage(details);
+
     const studentToBeExpelled = (element) => element.id === details.id;
 
     const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
@@ -416,11 +434,14 @@ function checkStatus(selectedStudent) {
   // Check status of selected student
   if (expelledStudents.includes(selectedStudent)) {
     document.querySelector("#expel_stat").style.color = "red";
-  } else if (inquisitorialSquad.includes(selectedStudent)) {
-    document.querySelector("#squad_stat").style.color = "red";
-  } else if (prefects.includes(selectedStudent)) {
+  } else if (allStudents.filter((selectedStudent) => selectedStudent.prefect).includes(selectedStudent)) {
     document.querySelector("#prefect_stat").style.color = "red";
   }
+
+  // else if (inquisitorialSquad.includes(selectedStudent)) {
+  //   document.querySelector("#squad_stat").style.color = "red";
+  // } else if (prefects.includes(selectedStudent)) {
+  // }
 }
 
 function searchStudent(evt) {
