@@ -24,21 +24,6 @@ const Student = {
   prefect: false,
 };
 
-const me = {
-  firstName: "Anders",
-  lastName: "Iversen",
-  middleName: "Trapman",
-  nickName: "Trap",
-  bloodStatus: "Aryan",
-  image: "",
-  house: "Dumbledore",
-  gender: "boy",
-  inquisitorial: false,
-  id: 0,
-  expelled: false,
-  prefect: false,
-};
-
 const settings = {
   filter: "*",
   sortBy: "firstName",
@@ -538,26 +523,46 @@ function searchStudent(evt) {
 
 function hackTheSystem() {
   console.log("system is hacked");
-
-  let random = Math.floor(Math.random() * 3) + 1;
+  let random = Math.floor(Math.random() * 2) + 1;
   console.log(random);
 
-  if (random == 1) {
-    console.log("all pure is random1");
-  } else if (random == 2) {
-    console.log("all pure is random2");
-  } else {
-    console.log("all pure is random3");
-  }
-
+  const me = {
+    firstName: "Anders",
+    lastName: "Iversen",
+    middleName: "Trapman",
+    nickName: "Trap",
+    bloodStatus: "Aryan",
+    image: "",
+    house: "Dumbledore",
+    gender: "boy",
+    inquisitorial: false,
+    id: 0,
+    expelled: false,
+    prefect: false,
+  };
   allStudents.push(me);
+
+  function messUpBloodStatus() {
+    allStudents.forEach((student, index) => {
+      if ((student.bloodStatus = "pure-blood" && random === 1)) {
+        student.bloodStatus = "half-blood";
+      } else if ((student.bloodStatus = "pure-blood" && random === 2)) {
+        student.bloodStatus = "muggle";
+      }
+      if ((student.bloodStatus = "muggle")) {
+        student.bloodStatus = "pure-blood";
+      }
+    });
+  }
 
   function removeInquisitors() {
     console.log("removeInquisitors");
-    filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial).length = 0;
+    // filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial).length = 0;
 
-    displayList(filteredStudents);
+    displayList((allStudents.filter((student) => student.inquisitorial).length = 0));
   }
 
   setTimeout(removeInquisitors, 3000);
+
+  messUpBloodStatus();
 }
