@@ -24,6 +24,13 @@ const Student = {
   prefect: false,
 };
 
+const settings = {
+  filter: "*",
+  sortBy: "firstName",
+  sortDir: "asc",
+  direction: 1,
+};
+
 function setup() {
   // Search for student
   document.querySelector("#clear_btn").addEventListener("click", () => {
@@ -71,10 +78,7 @@ function setup() {
   });
 
   // Sort when th elements are clicked.
-  let allThElements = document.querySelectorAll("th");
-  allThElements.forEach((ThElement) => {
-    ThElement.addEventListener("click", sort);
-  });
+  document.querySelectorAll("[data-action='sort']").forEach((button) => button.addEventListener("click", sort));
 
   getStudents();
 }
@@ -109,37 +113,51 @@ function getBloodStatus(families) {
   });
 }
 
-function sort(ThElement) {
-  let direction = 1;
+function sort(event) {
+  // console.log("-", event);
+  const sortBy = event.target.dataset.sort;
+  const sortDir = event.target.dataset.sortDirection;
+  // console.log(sortDir, "-", sortBy, "-", event);
 
-  let sortBy = ThElement.target.dataset.sort;
-  let orderBy = ThElement.target.getAttribute("data-sort-direction");
+  // find "old" sortBy element
+  const oldElement = document.querySelector(`[data-sort='${settings.sortBy}']`);
+  oldElement.classList.remove("sortby");
+  // console.log(oldElement);
+  // indicate active sort
+  event.target.classList.add("sortby");
+  settings.sortBy = sortBy;
 
-  if (orderBy === "asc") {
-    ThElement.target.dataset.sortDirection = "desc";
+  // console.log(event);
+
+  if (sortDir === "asc") {
+    event.target.dataset.sortDirection = "desc";
   } else {
-    ThElement.target.dataset.sortDirection = "asc";
+    event.target.dataset.sortDirection = "asc";
   }
 
-  if (orderBy === "asc") {
-    direction = 1;
+  if (sortDir === "desc") {
+    settings.direction = -1;
   } else {
-    direction = -1;
+    settings.direction = 1;
   }
 
-  console.log(sortBy);
-  console.log(orderBy);
+  filteredStudents.sort(sortByValue);
 
-  filteredStudents.sort(compareProperty);
-  displayList(filteredStudents);
-
-  function compareProperty(a, b) {
+  // Campare values
+  // a is the object and b is the index in the array
+  function sortByValue(a, b) {
+    // console.log(sortBy);
     if (a[sortBy] < b[sortBy]) {
-      return -1 * direction;
+      return -1 * settings.direction;
     } else {
-      return 1 * direction;
+      return 1 * settings.direction;
     }
   }
+
+  settings.sortBy = sortBy;
+  settings.sortDir = sortDir;
+
+  displayList(filteredStudents);
 }
 
 function filterStatus(statusOption) {
