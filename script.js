@@ -7,7 +7,6 @@ let families;
 let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
-// let inquisitorialSquad = [];
 
 const Student = {
   firstName: "",
@@ -77,8 +76,6 @@ function setup() {
     ThElement.addEventListener("click", sort);
   });
 
-  document.querySelector("#total_not_expelled").textContent = `34 student(s) have not been expelled`;
-
   getStudents();
 }
 
@@ -96,7 +93,6 @@ async function getFamilies() {
   const url2 = "https://petlatkea.dk/2021/hogwarts/families.json";
   let data = await fetch(url2);
   families = await data.json();
-  console.log(families);
   getBloodStatus(families);
 }
 
@@ -109,7 +105,7 @@ function getBloodStatus(families) {
     } else {
       student.bloodStatus = "muggle";
     }
-    console.log(student);
+    // console.log(student);
   });
 }
 
@@ -148,45 +144,54 @@ function sort(ThElement) {
 
 function filterStatus(statusOption) {
   let filterChoice = statusOption.target.getAttribute("data-filter");
+  console.log(filterChoice);
 
-  if (expelledStudents.length === 0 && filterChoice === "Expelled") {
-    document.querySelector("#error_empty").style.display = "block";
-    document.querySelector("#error_empty h2").innerHTML = "No students have been expelled yet";
-  } else {
-    document.querySelector("#error_empty").style.display = "none";
-  }
+  // Display filter option on buttton for user
+  document.querySelector(".dropbtn_status").textContent = `Filter by ${filterChoice}`;
 
-  if (allStudents.filter((student) => student.prefect).length === 0 && filterChoice === "Prefect") {
-    document.querySelector("#error_empty").style.display = "block";
-    document.querySelector("#error_empty h2").innerHTML = "No students have been selected prefects yet";
-  } else {
-    document.querySelector("#error_empty").style.display = "none";
-  }
-
-  if (filterChoice === "*") {
+  if (filterChoice === "Not expelled") {
     filteredStudents = allStudents;
+    document.querySelector("#total_displaying").textContent = `Currently showing ${allStudents.length} student(s)`;
   } else if (filterChoice === "Expelled") {
     filteredStudents = expelledStudents;
+    document.querySelector("#total_displaying").textContent = `Currently showing ${expelledStudents.length} student(s)`;
   } else if (filterChoice === "Inquisitorial") {
     filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial);
+    document.querySelector("#total_displaying").textContent = `Currently showing ${allStudents.filter((studentInfo) => studentInfo.inquisitorial).length} student(s)`;
   } else if (filterChoice === "Prefect") {
     filteredStudents = allStudents.filter((student) => student.prefect);
+    document.querySelector("#total_displaying").textContent = `Currently showing ${allStudents.filter((student) => student.prefect).length} student(s)`;
   }
 
   displayList(filteredStudents);
+  updateTableBody();
+
+  function updateTableBody() {
+    if (expelledStudents.length === 0 && filterChoice === "Expelled") {
+      document.querySelector("#error_empty h2").innerHTML = "No students have been expelled yet";
+    } else if (allStudents.filter((student) => student.prefect).length === 0 && filterChoice === "Prefect") {
+      document.querySelector("#error_empty h2").innerHTML = "No students have been selected prefect yet";
+    } else if (allStudents.filter((student) => student.inquisitorial).length === 0 && filterChoice === "Inquisitorial") {
+      document.querySelector("#error_empty h2").innerHTML = "No students have been selected inquisitor yet";
+    } else {
+      document.querySelector("#error_empty").style.display = "none";
+    }
+  }
 }
 
 function filterHouse(option) {
   let filterChoice = option.target.getAttribute("data-filter");
+
   console.log(filterChoice);
 
-  if (filterChoice != "*") {
+  document.querySelector(".dropbtn_house").textContent = `Filter by ${filterChoice}`;
+
+  if (filterChoice != "All houses") {
     filteredStudents = allStudents.filter(studentHouse);
+    document.querySelector("#total_displaying").textContent = `Currently showing ${filteredStudents.length} students`;
   } else {
     filteredStudents = allStudents;
   }
-
-  console.log(allStudents.filter(studentHouse));
 
   function studentHouse(studentInfo) {
     if (studentInfo.house === filterChoice) {
@@ -197,15 +202,20 @@ function filterHouse(option) {
   }
 
   displayList(filteredStudents);
-  // displayTotalStudentNumber();
 }
 
-function displayTotalStudentNumber() {
-  console.log("Display totalt student number");
-  const totalGryff = document.querySelector("#gryff_total");
-  const totalSlyth = document.querySelector("#slyth_total");
-  const totalHuff = document.querySelector("#huff_total");
-  const totalRaven = document.querySelector("#raven_total");
+function displayListInformation() {
+  console.log("displayListInformation");
+
+  // Number of students per house:
+  document.querySelector("#gryff_total").textContent = allStudents.filter((student) => student.house === "Gryffindor").length;
+  document.querySelector("#slyth_total").textContent = allStudents.filter((student) => student.house === "Slytherin").length;
+  document.querySelector("#huff_total").textContent = allStudents.filter((student) => student.house === "Hufflepuff").length;
+  document.querySelector("#raven_total").textContent = allStudents.filter((student) => student.house === "Ravenclaw").length;
+
+  // Number of expelled and not expelled students:
+  document.querySelector("#total_expelled").textContent = `${expelledStudents.length} student(s) have been expelled`;
+  document.querySelector("#total_not_expelled").textContent = `${allStudents.length} student(s) have not been expelled`;
 }
 
 function updateObjects(students) {
@@ -229,7 +239,6 @@ function updateObjects(students) {
 
     if (checkName.length === 2) {
       studentInfo.lastName = checkName[1].charAt(0).toUpperCase() + checkName[1].slice(1).toLowerCase();
-
       studentInfo.middleName = "";
     } else if (checkName.length === 3) {
       studentInfo.lastName = checkName[2].charAt(0).toUpperCase() + checkName[2].slice(1).toLowerCase();
@@ -245,9 +254,9 @@ function updateObjects(students) {
     } else if (getfullName.includes("-")) {
       studentInfo.lastName = getfullName.substring(getfullName.indexOf("-") - 5);
       studentInfo.middleName = "";
-      studentInfo.nickName = "undefined";
+      studentInfo.nickName = "none";
     } else {
-      studentInfo.nickName = "undefined";
+      studentInfo.nickName = "none";
     }
 
     if (checkName.length === 1) {
@@ -271,14 +280,16 @@ function updateObjects(students) {
 
     allStudents.push(studentInfo);
   });
+
   displayList(allStudents);
-  // console.table(allStudents);
 }
 
 function displayList(allStudents) {
+  document.querySelector("#total_displaying").textContent = `Currently showing ${allStudents.length} student(s)`;
   document.querySelector("#students_table tbody").innerHTML = "";
 
   allStudents.forEach(displayStudent);
+  displayListInformation();
 }
 
 function displayStudent(studentInfo) {
@@ -369,8 +380,7 @@ function tryToMakeStudentInquisitorial(selectedStudent) {
 
 function closePopUp() {
   document.querySelector(".pop_up").style.display = "none";
-  document.querySelector("#total_expelled").textContent = `${expelledStudents.length} student(s) have been expelled`;
-  document.querySelector("#total_not_expelled").textContent = `${allStudents.length} student(s) have not been expelled`;
+  displayListInformation();
 }
 
 function displayMessage(details) {
@@ -390,9 +400,33 @@ function showDetails(details) {
   document.querySelector(".pop_up").style.display = "block";
   window.scrollTo(0, 0);
 
-  document.querySelector(".pop_up").querySelector("#fullname").textContent = details.firstName + " " + details.middleName + " " + details.lastName;
+  document.querySelector(".pop_up").querySelector("#firstname").textContent = details.firstName;
+  document.querySelector(".pop_up").querySelector("#middlename").textContent = details.middleName;
+  document.querySelector(".pop_up").querySelector("#nickname").textContent = details.nickName;
+  document.querySelector(".pop_up").querySelector("#lastname").textContent = details.lastName;
   document.querySelector(".pop_up").querySelector("#house").textContent = details.house;
+  document.querySelector(".pop_up").querySelector("#blood").textContent = details.bloodStatus;
   document.querySelector(".pop_up").querySelector("img").src = details.image;
+
+  if (details.house === "Gryffindor") {
+    document.querySelector("#house_crest").src = "images/assets/gryffindor_emblem.png";
+  } else if (details.house === "Slytherin") {
+    document.querySelector("#house_crest").src = "images/assets/slytherin_emblem.png";
+  } else if (details.house === "Hufflepuff") {
+    document.querySelector("#house_crest").src = "images/assets/hufflepuff_emblem.png";
+  } else {
+    document.querySelector("#house_crest").src = "images/assets/ravenclaw_emblem.png";
+  }
+
+  document
+    .querySelector(".pop_up")
+    .querySelector("img")
+    .addEventListener("error", function handleError() {
+      const defaultImage = "images/assets/default.png";
+
+      document.querySelector(".pop_up").querySelector("img").src = defaultImage;
+      document.querySelector(".pop_up").querySelector("img").alt = "default";
+    });
 
   // Hide dropdown content if user clicks outside of it
   document.addEventListener("mouseup", function (e) {
@@ -436,12 +470,10 @@ function checkStatus(selectedStudent) {
     document.querySelector("#expel_stat").style.color = "red";
   } else if (allStudents.filter((selectedStudent) => selectedStudent.prefect).includes(selectedStudent)) {
     document.querySelector("#prefect_stat").style.color = "red";
+  } else if (allStudents.filter((selectedStudent) => selectedStudent.inquisitorial).includes(selectedStudent)) {
+    document.querySelector("#squad_stat").style.color = "red";
+    console.log("ins");
   }
-
-  // else if (inquisitorialSquad.includes(selectedStudent)) {
-  //   document.querySelector("#squad_stat").style.color = "red";
-  // } else if (prefects.includes(selectedStudent)) {
-  // }
 }
 
 function searchStudent(evt) {

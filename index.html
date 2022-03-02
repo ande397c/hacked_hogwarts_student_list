@@ -17,7 +17,7 @@
         </div>
         <h3>House Gryffindor</h3>
         <h5>Total number of students:</h5>
-        <h2 id="gryff_total">8</h2>
+        <h2 id="gryff_total"></h2>
       </article>
       <article class="card">
         <div class="center">
@@ -25,7 +25,7 @@
         </div>
         <h3>House Slytherin</h3>
         <h5>Total number of students:</h5>
-        <h2 id="slyth_total">9</h2>
+        <h2 id="slyth_total"></h2>
       </article>
       <article class="card">
         <div class="center">
@@ -33,7 +33,7 @@
         </div>
         <h3>House Hufflepuff</h3>
         <h5>Total number of students:</h5>
-        <h2 id="huff_total">9</h2>
+        <h2 id="huff_total"></h2>
       </article>
       <article class="card">
         <div class="center">
@@ -41,15 +41,15 @@
         </div>
         <h3>House Ravenclaw</h3>
         <h5>Total number of students:</h5>
-        <h2 id="raven_total">8</h2>
+        <h2 id="raven_total"></h2>
       </article>
     </section>
 
     <article id="list_info">
-      <h3>List information</h3>
+      <h3>List information:</h3>
       <div class="numbers">
         <h5 id="total_not_expelled">0 students have not been expelled</h5>
-        <h5 id="total_displaying">Currently showing x student(s)</h5>
+        <h5 id="total_displaying"></h5>
         <h5 id="total_expelled">0 student(s) have been expelled</h5>
       </div>
     </article>
@@ -59,20 +59,20 @@
     <section id="filter_interface">
       <article class="dropdowns">
         <div class="dropdown_house">
-          <button class="dropbtn">Filter by house</button>
+          <button class="dropbtn_house">Filter by house</button>
           <div class="dropdown-content">
             <button class="filter_house" data-action="filter" data-filter="Gryffindor">Gryffindor</button>
             <button class="filter_house" data-action="filter" data-filter="Slytherin">Slytherin</button>
             <button class="filter_house" data-action="filter" data-filter="Hufflepuff">Hufflepuff</button>
             <button class="filter_house" data-action="filter" data-filter="Ravenclaw">Ravenclaw</button>
-            <button class="filter_house" data-action="filter" data-filter="*">All houses</button>
+            <button class="filter_house" data-action="filter" data-filter="All houses">All houses</button>
           </div>
         </div>
 
         <div class="dropdown_status">
-          <button class="dropbtn">Filter by student status</button>
+          <button class="dropbtn_status">Filter by student status</button>
           <div class="dropdown-content_status">
-            <button class="filter_status" data-action="filter" data-filter="*">Not expelled</button>
+            <button class="filter_status" data-action="filter" data-filter="Not expelled">Not expelled</button>
             <button class="filter_status" data-action="filter" data-filter="Expelled">Expelled</button>
             <button class="filter_status" data-action="filter" data-filter="Prefect">Prefects</button>
             <button class="filter_status" data-action="filter" data-filter="Inquisitorial">Part of inquisitorial squad</button>
@@ -117,17 +117,40 @@
         <section id="student_popup_info">
           <img src="" alt="" />
           <div class="info_section">
-            <h4 id="fullname"></h4>
-
-            <h4>House:</h4>
-            <h4 id="house"></h4>
+            <div class="flex_popup">
+              <h5>Firstname:</h5>
+              <h5 id="firstname"></h5>
+            </div>
+            <div class="flex_popup">
+              <h5>Middlename:</h5>
+              <h5 id="middlename"></h5>
+            </div>
+            <div class="flex_popup">
+              <h5>Nickname:</h5>
+              <h5 id="nickname"></h5>
+            </div>
+            <div class="flex_popup_last">
+              <h5>Lastname:</h5>
+              <h5 id="lastname"></h5>
+            </div>
+            <article class="house_section">
+              <div class="house_text">
+                <h5>House:</h5>
+                <h5 id="house"></h5>
+              </div>
+              <img id="house_crest" src="" alt="" />
+            </article>
+            <div class="blood_text">
+              <h5>Blood-status:</h5>
+              <h5 id="blood"></h5>
+            </div>
           </div>
         </section>
         <div class="student_status">
           <h4>Student status:</h4>
-          <p id="expel_stat">Expelled:</p>
-          <p id="prefect_stat">Part of prefect:</p>
-          <p id="squad_stat">Part of inquisitorial squad:</p>
+          <p id="expel_stat">Expelled</p>
+          <p id="prefect_stat">Prefect</p>
+          <p id="squad_stat">Inquisitor</p>
         </div>
         <button id="expel_btn">Expel student</button>
       </div>
