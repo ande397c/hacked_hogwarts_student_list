@@ -24,6 +24,21 @@ const Student = {
   prefect: false,
 };
 
+const me = {
+  firstName: "Anders",
+  lastName: "Iversen",
+  middleName: "Trapman",
+  nickName: "Trap",
+  bloodStatus: "Aryan",
+  image: "",
+  house: "Dumbledore",
+  gender: "boy",
+  inquisitorial: false,
+  id: 0,
+  expelled: false,
+  prefect: false,
+};
+
 const settings = {
   filter: "*",
   sortBy: "firstName",
@@ -79,6 +94,8 @@ function setup() {
 
   // Sort when th elements are clicked.
   document.querySelectorAll("[data-action='sort']").forEach((button) => button.addEventListener("click", sort));
+
+  document.querySelector("h1").addEventListener("dblclick", hackTheSystem);
 
   getStudents();
 }
@@ -165,7 +182,7 @@ function filterStatus(statusOption) {
   console.log(filterChoice);
 
   // Display filter option on buttton for user
-  document.querySelector(".dropbtn_status").textContent = `Filter by ${filterChoice}`;
+  document.querySelector(".dropbtn_status").textContent = `Filter by: ${filterChoice}`;
 
   if (filterChoice === "Not expelled") {
     filteredStudents = allStudents;
@@ -202,7 +219,7 @@ function filterHouse(option) {
 
   console.log(filterChoice);
 
-  document.querySelector(".dropbtn_house").textContent = `Filter by ${filterChoice}`;
+  document.querySelector(".dropbtn_house").textContent = `Filter by: ${filterChoice}`;
 
   if (filterChoice != "All houses") {
     filteredStudents = allStudents.filter(studentHouse);
@@ -485,12 +502,21 @@ function checkStatus(selectedStudent) {
 
   // Check status of selected student
   if (expelledStudents.includes(selectedStudent)) {
-    document.querySelector("#expel_stat").style.color = "red";
-  } else if (allStudents.filter((selectedStudent) => selectedStudent.prefect).includes(selectedStudent)) {
-    document.querySelector("#prefect_stat").style.color = "red";
-  } else if (allStudents.filter((selectedStudent) => selectedStudent.inquisitorial).includes(selectedStudent)) {
-    document.querySelector("#squad_stat").style.color = "red";
-    console.log("ins");
+    document.querySelector("#is_exp").style.backgroundColor = "#71CCA8";
+  } else {
+    document.querySelector("#is_exp").style.backgroundColor = "#EF8784";
+  }
+
+  if (allStudents.filter((selectedStudent) => selectedStudent.prefect).includes(selectedStudent)) {
+    document.querySelector("#is_pre").style.backgroundColor = "#71CCA8";
+  } else {
+    document.querySelector("#is_pre").style.backgroundColor = "#EF8784";
+  }
+
+  if (allStudents.filter((selectedStudent) => selectedStudent.inquisitorial).includes(selectedStudent)) {
+    document.querySelector("#is_ins").style.backgroundColor = "#71CCA8";
+  } else {
+    document.querySelector("#is_ins").style.backgroundColor = "#EF8784";
   }
 }
 
@@ -506,4 +532,32 @@ function searchStudent(evt) {
       return elm.firstName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.lastName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.house.toUpperCase().includes(evt.target.value.toUpperCase());
     })
   );
+}
+
+// Danger zone!
+
+function hackTheSystem() {
+  console.log("system is hacked");
+
+  let random = Math.floor(Math.random() * 3) + 1;
+  console.log(random);
+
+  if (random == 1) {
+    console.log("all pure is random1");
+  } else if (random == 2) {
+    console.log("all pure is random2");
+  } else {
+    console.log("all pure is random3");
+  }
+
+  allStudents.push(me);
+
+  function removeInquisitors() {
+    console.log("removeInquisitors");
+    filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial).length = 0;
+
+    displayList(filteredStudents);
+  }
+
+  setTimeout(removeInquisitors, 3000);
 }

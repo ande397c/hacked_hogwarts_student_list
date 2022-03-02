@@ -45,15 +45,6 @@
       </article>
     </section>
 
-    <article id="list_info">
-      <h3>List information:</h3>
-      <div class="numbers">
-        <h5 id="total_not_expelled">0 students have not been expelled</h5>
-        <h5 id="total_displaying"></h5>
-        <h5 id="total_expelled">0 student(s) have been expelled</h5>
-      </div>
-    </article>
-
     <h3>Filter students:</h3>
 
     <section id="filter_interface">
@@ -86,6 +77,12 @@
       </div>
     </section>
 
+    <article class="numbers">
+      <h5 id="total_not_expelled">0 students have not been expelled</h5>
+      <h5 id="total_displaying"></h5>
+      <h5 id="total_expelled">0 student(s) have been expelled</h5>
+    </article>
+
     <table id="students_table">
       <thead>
         <tr id="sorting">
@@ -99,7 +96,9 @@
       </thead>
       <tbody></tbody>
     </table>
+
     <div id="error_empty"><h2></h2></div>
+
     <template id="student">
       <tr>
         <td data-field="prefect">⭐</td>
@@ -148,9 +147,18 @@
         </section>
         <div class="student_status">
           <h4>Student status:</h4>
-          <p id="expel_stat">Expelled</p>
-          <p id="prefect_stat">Prefect</p>
-          <p id="squad_stat">Inquisitor</p>
+          <div class="flex_popup">
+            <p id="expel_stat">Expelled</p>
+            <button id="is_exp"></button>
+          </div>
+          <div class="flex_popup">
+            <p id="prefect_stat">Prefect</p>
+            <button id="is_pre"></button>
+          </div>
+          <div class="flex_popup">
+            <p id="squad_stat">Inquisitor</p>
+            <button id="is_ins"></button>
+          </div>
         </div>
         <button id="expel_btn">Expel student</button>
       </div>

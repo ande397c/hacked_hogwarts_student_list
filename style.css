@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #cac3c366;
+}
+
 h1 {
   text-align: center;
 }
@@ -12,6 +16,7 @@ h1 {
 #house_cards {
   display: flex;
   justify-content: space-evenly;
+  margin-bottom: 2rem;
 }
 
 .card {
@@ -19,6 +24,7 @@ h1 {
   border: 1px solid black;
   border-radius: 10px;
   height: 15rem;
+  background-color: #cecdb7;
 }
 
 .card img {
@@ -40,23 +46,31 @@ h1 {
 
 /*    ........... List information styling ........... */
 
-#list_info {
-  padding: 0.8rem;
-  border: 1px solid black;
-  margin-top: 3rem;
-  font-size: 1.1rem;
-}
-
-#list_info h3 {
-  text-align: center;
-  margin: 0;
-}
-
 .numbers {
   display: flex;
   justify-content: space-between;
 }
+
+#total_expelled {
+  color: #e75c57;
+  font-size: 1.1rem;
+}
+
+#total_not_expelled {
+  color: #68d8ab;
+  font-size: 1.1rem;
+}
+
+#total_displaying {
+  font-size: 1.1rem;
+}
 /*   ............  table styling ....... */
+
+.table_wrapper {
+  display: block;
+  overflow: scroll;
+  white-space: nowrap;
+}
 
 [data-field="inquisitorial"] {
   text-align: center;
@@ -75,7 +89,7 @@ h1 {
 }
 
 #students_table tr:hover {
-  background-color: #ddd;
+  background-color: rgb(153, 148, 148);
 }
 
 #sorting th.sortby[data-sort-direction="asc"]::after {
@@ -93,7 +107,7 @@ h1 {
 
 #sorting th.sortby[data-sort-direction="asc"],
 #sorting th.sortby[data-sort-direction="desc"] {
-  background-color: #c4c4c4cb;
+  background-color: black;
 }
 
 #students_table th {
@@ -109,6 +123,7 @@ h1 {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
   width: 100%;
+  margin-top: -1rem;
 }
 
 #students_table td,
@@ -121,6 +136,14 @@ h1 {
 #students_table tr {
   cursor: pointer;
   text-align: center;
+}
+
+.student_status button {
+  padding: 10px;
+  height: 10px;
+  width: 100px;
+  border: none;
+  border-radius: 10px;
 }
 
 /*   ............  Pop up close (X) styling ....... */
@@ -151,8 +174,7 @@ h1 {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(13, 12, 12, 0.64);
 }
 
 .popup_content {
@@ -202,7 +224,7 @@ h1 {
 .student_status {
   padding: 10px;
   position: relative;
-  bottom: 8rem;
+  bottom: 6rem;
 }
 
 .student_status h4 {
@@ -249,7 +271,7 @@ h1 {
 
 #house_crest {
   max-width: 6rem;
-  max-height: 6rem;
+  max-height: 7rem;
   grid-column: 2/3;
   grid-row: 1;
 }
@@ -317,7 +339,7 @@ h1 {
 #filter_interface {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
 }
 
 .dropdowns {
@@ -330,7 +352,7 @@ h1 {
 }
 
 .search {
-  margin-top: 1rem;
+  margin-top: 1.1rem;
 }
 
 /******** Feedback **********/
