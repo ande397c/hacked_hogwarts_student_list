@@ -148,7 +148,8 @@ h1 {
 
 /*   ............  Pop up close (X) styling ....... */
 
-.close {
+.close,
+.close_expel {
   color: #aaaaaa;
   float: right;
   font-size: 30px;
@@ -161,10 +162,16 @@ h1 {
   text-decoration: none;
   cursor: pointer;
 }
+.close_expel:hover {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  cursor: pointer;
+}
 
 /*   ............  Pop up styling ....... */
 
-.pop_up {
+.pop_up,
+.pop_up_expel {
   display: none;
   position: fixed;
   z-index: 1;
@@ -278,6 +285,18 @@ h1 {
 
 .house_text {
   padding: 10px 0 0 0;
+}
+
+.pop_up_expel h2 {
+  text-align: center;
+  color: red;
+  font-size: 2rem;
+}
+
+.pop_up_expel h4 {
+  text-align: center;
+  color: red;
+  font-size: 1.5rem;
 }
 /* ............  Dropdown ................ */
 .dropdown_menu {

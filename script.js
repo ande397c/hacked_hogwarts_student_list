@@ -8,6 +8,8 @@ let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
 
+let isHacked = false;
+
 const Student = {
   firstName: "",
   lastName: "",
@@ -19,6 +21,8 @@ const Student = {
   gender: "",
   bloodStatus: "",
   inquisitorial: false,
+  hacker: false,
+
   id: 0,
   expelled: false,
   prefect: false,
@@ -119,7 +123,7 @@ function sort(event) {
   // console.log("-", event);
   const sortBy = event.target.dataset.sort;
   const sortDir = event.target.dataset.sortDirection;
-  // console.log(sortDir, "-", sortBy, "-", event);
+  console.log(sortDir, "-", sortBy);
 
   // find "old" sortBy element
   const oldElement = document.querySelector(`[data-sort='${settings.sortBy}']`);
@@ -239,9 +243,13 @@ function displayListInformation() {
 }
 
 function updateObjects(students) {
+  console.log("UpdateObjects");
   filteredStudents = allStudents;
   students.forEach((jsonObject, i) => {
     const studentInfo = Object.create(Student);
+    studentInfo.inquisitorial = false;
+    // console.log("studentInfo", studentInfo);
+    // console.log("studentInfo", studentInfo.inquisitorial);
     studentInfo.id = i;
     // Get full name from json data:
     const getfullName = jsonObject.fullname.trim();
@@ -313,6 +321,7 @@ function displayList(allStudents) {
 }
 
 function displayStudent(studentInfo) {
+  // console.log("displayStudent:", studentInfo);
   // create clone
   const clone = document.querySelector("template#student").content.cloneNode(true);
 
@@ -400,6 +409,7 @@ function tryToMakeStudentInquisitorial(selectedStudent) {
 
 function closePopUp() {
   document.querySelector(".pop_up").style.display = "none";
+  // document.querySelector(".pop_up_expel").style.display = "none";
   displayListInformation();
 }
 
@@ -460,19 +470,26 @@ function showDetails(details) {
 
   function expelStudent() {
     document.querySelector("#expel_btn").removeEventListener("click", expelStudent);
-    displayMessage(details);
 
     const studentToBeExpelled = (element) => element.id === details.id;
 
     const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
 
-    expelledStudents.push(allStudents[indexOfStudentToExpel]);
-
-    allStudents.splice(indexOfStudentToExpel, 1);
-
-    console.log("expelledStudents", expelledStudents);
-    console.log("object:", details);
-    displayList(allStudents);
+    if (details.hacker !== true) {
+      console.log("isHacked = false");
+      expelledStudents.push(allStudents[indexOfStudentToExpel]);
+      allStudents.splice(indexOfStudentToExpel, 1);
+      console.log("expelledStudents", expelledStudents);
+      console.log("object:", details);
+      displayList(allStudents);
+      displayMessage(details);
+    } else {
+      console.log("can't expel this student");
+      document.querySelector(".pop_up_expel").style.display = "block";
+      document.querySelector(".close_expel").addEventListener("click", () => {
+        document.querySelector(".pop_up_expel").style.display = "none";
+      });
+    }
     closePopUp(expelledStudents);
   }
 
@@ -523,15 +540,15 @@ function searchStudent(evt) {
 
 function hackTheSystem() {
   console.log("system is hacked");
-  let random = Math.floor(Math.random() * 2) + 1;
-  console.log(random);
+
+  isHacked = true;
 
   const me = {
     firstName: "Anders",
     lastName: "Iversen",
     middleName: "Trapman",
     nickName: "Trap",
-    bloodStatus: "Aryan",
+    bloodStatus: "aryan",
     image: "",
     house: "Dumbledore",
     gender: "boy",
@@ -539,30 +556,47 @@ function hackTheSystem() {
     id: 0,
     expelled: false,
     prefect: false,
+    hacker: true,
   };
+
   allStudents.push(me);
 
   function messUpBloodStatus() {
-    allStudents.forEach((student, index) => {
-      if ((student.bloodStatus = "pure-blood" && random === 1)) {
-        student.bloodStatus = "half-blood";
-      } else if ((student.bloodStatus = "pure-blood" && random === 2)) {
-        student.bloodStatus = "muggle";
-      }
-      if ((student.bloodStatus = "muggle")) {
+    allStudents.forEach((student) => {
+      const bloodStatuses = ["pure-blood", "half-blood", "muggle"];
+      let random = Math.floor(Math.random() * 3);
+      if (student.bloodStatus === "muggle" || student.bloodStatus === "half-blood") {
         student.bloodStatus = "pure-blood";
+      } else {
+        student.bloodStatus = bloodStatuses[random];
       }
     });
   }
 
   function removeInquisitors() {
     console.log("removeInquisitors");
-    // filteredStudents = allStudents.filter((studentInfo) => studentInfo.inquisitorial).length = 0;
 
-    displayList((allStudents.filter((student) => student.inquisitorial).length = 0));
+    allStudents.forEach((student) => {
+      student.inquisitorial = false;
+    });
+
+    displayList(allStudents);
+    errorBlood();
   }
 
   setTimeout(removeInquisitors, 3000);
 
   messUpBloodStatus();
+}
+
+function errorBlood() {
+  const message = document.querySelector("#messeage_board");
+  message.className = "cta show";
+  document.querySelector("#messeage").textContent = `Error - inquisitors have lost their assigned status`;
+
+  setTimeout(removeMessage, 3000);
+
+  function removeMessage() {
+    message.className = "cta hide";
+  }
 }
