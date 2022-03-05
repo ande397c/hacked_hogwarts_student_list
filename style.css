@@ -52,12 +52,12 @@ h1 {
 }
 
 #total_expelled {
-  color: #e75c57;
+  color: #ff0900;
   font-size: 1.1rem;
 }
 
 #total_not_expelled {
-  color: #68d8ab;
+  color: #0d603f;
   font-size: 1.1rem;
 }
 
@@ -140,7 +140,6 @@ h1 {
 
 .student_status button {
   padding: 10px;
-  height: 10px;
   width: 100px;
   border: none;
   border-radius: 10px;
@@ -149,7 +148,9 @@ h1 {
 /*   ............  Pop up close (X) styling ....... */
 
 .close,
-.close_expel {
+.close_expel,
+.close_ins,
+.close_pre {
   color: #aaaaaa;
   float: right;
   font-size: 30px;
@@ -167,11 +168,23 @@ h1 {
   text-decoration: none;
   cursor: pointer;
 }
+.close_ins:hover {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  cursor: pointer;
+}
+.close_pre:hover {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  cursor: pointer;
+}
 
 /*   ............  Pop up styling ....... */
 
 .pop_up,
-.pop_up_expel {
+.pop_up_expel,
+.pop_up_ins,
+.pop_up_pre {
   display: none;
   position: fixed;
   z-index: 1;
@@ -192,7 +205,42 @@ h1 {
   background-color: #fefefe;
   border: 1px solid #888;
   width: 550px;
-  height: 350px;
+  height: 400px;
+  box-shadow: 10px 7px 26px 7px rgba(0, 0, 0, 0.46);
+}
+
+.popup_content_expel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -80%);
+  background-color: #fefefe;
+  border: 1px solid #888;
+  width: 350px;
+  height: 250px;
+  box-shadow: 10px 7px 26px 7px rgba(0, 0, 0, 0.46);
+}
+.popup_content_ins {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -80%);
+  background-color: #fefefe;
+  border: 1px solid #888;
+  width: 420px;
+  height: 250px;
+  box-shadow: 10px 7px 26px 7px rgba(0, 0, 0, 0.46);
+}
+
+.popup_content_pre {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -80%);
+  background-color: #fefefe;
+  border: 1px solid #888;
+  width: 450px;
+  height: 200px;
   box-shadow: 10px 7px 26px 7px rgba(0, 0, 0, 0.46);
 }
 
@@ -208,15 +256,25 @@ h1 {
   grid-gap: 1rem;
 }
 
+.bottom_info {
+  display: flex;
+  gap: 1.5rem;
+}
+
 #expel_btn {
-  position: absolute;
-  bottom: 10px;
-  right: 20px;
   cursor: pointer;
   background-color: white;
   outline: none;
   border: 1px solid black;
   padding: 10px;
+}
+
+#prefect_stat {
+  margin-bottom: 0.5rem;
+}
+
+#squad_stat {
+  margin: 0;
 }
 
 .info_section {
@@ -231,12 +289,13 @@ h1 {
 .student_status {
   padding: 10px;
   position: relative;
-  bottom: 6rem;
+  bottom: 8rem;
 }
 
 .student_status h4 {
   margin: 0;
   margin-bottom: 0.5rem;
+  font-size: 1.2rem;
 }
 .student_status p {
   margin: 0 0 0.5rem 0;
@@ -297,7 +356,32 @@ h1 {
   text-align: center;
   color: red;
   font-size: 1.5rem;
+  line-height: 1.5rem;
 }
+
+.pop_up_ins h4,
+.pop_up_ins h2 {
+  text-align: center;
+  margin-top: 2rem;
+  line-height: 1.5rem;
+}
+.pop_up_pre h4,
+.pop_up_pre h2 {
+  text-align: center;
+  margin-top: 2rem;
+  line-height: 1.5rem;
+  margin-top: 2.5rem;
+}
+.pop_up_pre h4 {
+  font-size: 1.2rem;
+}
+
+#expel_stat {
+  color: red;
+  font-size: 1.3rem;
+  display: none;
+}
+
 /* ............  Dropdown ................ */
 .dropdown_menu {
   position: relative;
@@ -496,6 +580,10 @@ h1 {
   .popup_content {
     width: 390px;
   }
+
+  .bottom_info {
+    display: block;
+  }
 }
 
 @media (max-width: 450px) {
@@ -552,10 +640,21 @@ h1 {
     left: 5rem;
   }
 
-  .blood_text {
-    top: -6.5rem;
+  .popup_content {
+    height: 520px;
+    width: 300px;
+  }
+  .student_status {
     position: relative;
-    left: -7.5rem;
+    top: 2.5rem;
+  }
+
+  #student_popup_info {
+    grid-gap: 0;
+  }
+
+  #expel_btn {
+    margin-top: 0.5rem;
   }
 }
 
@@ -565,12 +664,29 @@ h1 {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
   #total_not_expelled {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
   #total_displaying {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
   #total_expelled {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .popup_content {
+    height: 520px;
+    width: 300px;
+  }
+  .student_status {
+    position: relative;
+    top: 2.5rem;
+  }
+
+  #student_popup_info {
+    grid-gap: 0;
+  }
+
+  #expel_btn {
+    margin-top: 0.5rem;
   }
 }

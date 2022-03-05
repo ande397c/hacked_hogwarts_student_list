@@ -115,7 +115,6 @@ function getBloodStatus(families) {
     } else {
       student.bloodStatus = "muggle";
     }
-    // console.log(student);
   });
 }
 
@@ -373,7 +372,8 @@ function tryToMakeStudentPrefect(selectedStudent) {
   const otherPrefect = prefects.filter((student) => student.house === selectedStudent.house);
 
   if (otherPrefect.length >= 2) {
-    alert("There can only be 2 prefects per house");
+    document.querySelector(".pop_up_pre").style.display = "block";
+    document.querySelector(".close_pre").addEventListener("click", closePopUp);
     prefects.shift();
   } else {
     selectedStudent.prefect = true;
@@ -398,7 +398,9 @@ function tryToMakeStudentInquisitorial(selectedStudent) {
   // const otherInquisitor = inquisitors.filter((studentInfo) => studentInfo.house === selectedStudent.house);
 
   if (selectedStudent.bloodStatus != "pure-blood" && selectedStudent.house != "Slytherin") {
-    alert("Only pure-blooded students from house Slytherin can be added!");
+    console.log("Only pure-blooded students from house Slytherin can be added!");
+    document.querySelector(".pop_up_ins").style.display = "block";
+    document.querySelector(".close_ins").addEventListener("click", closePopUp);
     inquisitors.shift();
   } else {
     selectedStudent.inquisitorial = true;
@@ -409,7 +411,9 @@ function tryToMakeStudentInquisitorial(selectedStudent) {
 
 function closePopUp() {
   document.querySelector(".pop_up").style.display = "none";
-  // document.querySelector(".pop_up_expel").style.display = "none";
+  document.querySelector(".pop_up_ins").style.display = "none";
+  document.querySelector(".pop_up_pre").style.display = "none";
+
   displayListInformation();
 }
 
@@ -440,12 +444,16 @@ function showDetails(details) {
 
   if (details.house === "Gryffindor") {
     document.querySelector("#house_crest").src = "images/assets/gryffindor_emblem.png";
+    document.querySelector(".popup_content").style.border = "7px solid #71130B";
   } else if (details.house === "Slytherin") {
     document.querySelector("#house_crest").src = "images/assets/slytherin_emblem.png";
+    document.querySelector(".popup_content").style.border = "7px solid #1E4B17";
   } else if (details.house === "Hufflepuff") {
     document.querySelector("#house_crest").src = "images/assets/hufflepuff_emblem.png";
+    document.querySelector(".popup_content").style.border = "7px solid #FAE24D";
   } else {
     document.querySelector("#house_crest").src = "images/assets/ravenclaw_emblem.png";
+    document.querySelector(".popup_content").style.border = "7px solid #0E2B75";
   }
 
   document
@@ -479,8 +487,6 @@ function showDetails(details) {
       console.log("isHacked = false");
       expelledStudents.push(allStudents[indexOfStudentToExpel]);
       allStudents.splice(indexOfStudentToExpel, 1);
-      console.log("expelledStudents", expelledStudents);
-      console.log("object:", details);
       displayList(allStudents);
       displayMessage(details);
     } else {
@@ -504,28 +510,28 @@ function checkStatus(selectedStudent) {
 
   // Check status of selected student
   if (expelledStudents.includes(selectedStudent)) {
-    document.querySelector("#is_exp").style.backgroundColor = "#71CCA8";
+    document.querySelector("#expel_stat").style.display = "block";
+    document.querySelector("#prefect_stat").style.display = "none";
+    document.querySelector("#squad_stat").style.display = "none";
   } else {
-    document.querySelector("#is_exp").style.backgroundColor = "#EF8784";
+    console.log("not expelled");
   }
 
   if (allStudents.filter((selectedStudent) => selectedStudent.prefect).includes(selectedStudent)) {
-    document.querySelector("#is_pre").style.backgroundColor = "#71CCA8";
+    document.querySelector("#prefect_stat").style.display = "block";
   } else {
-    document.querySelector("#is_pre").style.backgroundColor = "#EF8784";
+    document.querySelector("#prefect_stat").style.display = "none";
   }
 
   if (allStudents.filter((selectedStudent) => selectedStudent.inquisitorial).includes(selectedStudent)) {
-    document.querySelector("#is_ins").style.backgroundColor = "#71CCA8";
+    document.querySelector("#squad_stat").style.display = "block";
   } else {
-    document.querySelector("#is_ins").style.backgroundColor = "#EF8784";
+    document.querySelector("#squad_stat").style.display = "none";
   }
 }
 
 function searchStudent(evt) {
   console.log("searchStudent");
-
-  const inputVal = document.querySelector("#search_input").value;
 
   // write to the list with only those elemnts in the allAnimals array that has properties containing the search frase
   displayList(
@@ -541,7 +547,7 @@ function searchStudent(evt) {
 function hackTheSystem() {
   console.log("system is hacked");
 
-  isHacked = true;
+  isHacked === true;
 
   const me = {
     firstName: "Anders",
@@ -590,6 +596,7 @@ function hackTheSystem() {
 }
 
 function errorBlood() {
+  console.log("errorBlood");
   const message = document.querySelector("#messeage_board");
   message.className = "cta show";
   document.querySelector("#messeage").textContent = `Error - inquisitors have lost their assigned status`;
