@@ -234,8 +234,6 @@ function filterHouse(option) {
 // ............................................. display numbers and informations ..................................... //
 
 function displayListInformation() {
-  console.log("displayListInformation");
-
   // Number of students per house:
   document.querySelector("#gryff_total").textContent = allStudents.filter((student) => student.house === "Gryffindor").length;
   document.querySelector("#slyth_total").textContent = allStudents.filter((student) => student.house === "Slytherin").length;
@@ -250,7 +248,6 @@ function displayListInformation() {
 // ............................................. Get name data from json ..................................... //
 
 function updateObjects(students) {
-  console.log("UpdateObjects");
   filteredStudents = allStudents;
   students.forEach((jsonObject, i) => {
     const studentInfo = Object.create(Student);
@@ -369,8 +366,6 @@ function displayStudent(studentInfo) {
 
   // append clone to list
   document.querySelector("#students_table tbody").appendChild(clone);
-
-  return studentInfo;
 }
 
 // ............................................. Prefects ..................................... //
@@ -457,7 +452,7 @@ function displayMessage(details) {
 // ............................................. Detailed student popup ..................................... //
 
 function showDetails(details) {
-  //console.log("showDetails", details);
+  console.log(expelledStudents);
   document.querySelector(".pop_up").style.display = "block";
   window.scrollTo(0, 0);
 
@@ -511,7 +506,6 @@ function showDetails(details) {
     const indexOfStudentToExpel = allStudents.findIndex(studentToBeExpelled);
 
     if (details.hacker !== true) {
-      console.log("isHacked = false");
       expelledStudents.push(allStudents[indexOfStudentToExpel]);
       allStudents.splice(indexOfStudentToExpel, 1);
       displayList(allStudents);
@@ -527,13 +521,10 @@ function showDetails(details) {
   }
 
   checkStatus(details);
-
-  return details;
 }
 
 // ............................................. Get student status ..................................... //
 function checkStatus(selectedStudent) {
-  // let studentDetails = showDetails(info);
   console.log("Student Details:", selectedStudent);
 
   // Check status of selected student
