@@ -9,6 +9,17 @@ body {
 
 h1 {
   text-align: center;
+  font-family: "Titan One", cursive;
+  letter-spacing: 0.056em;
+  font-weight: 100;
+}
+
+p,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Lato", sans-serif;
 }
 
 /*   ............  cards styling ....... */
@@ -258,7 +269,8 @@ h1 {
 
 .bottom_info {
   display: flex;
-  gap: 1.5rem;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
 }
 
 #expel_btn {
@@ -457,7 +469,7 @@ h1 {
   margin-top: 1.1rem;
 }
 
-/******** Feedback **********/
+/*................ Feedback ................*/
 
 .cta {
   position: fixed;
@@ -497,7 +509,7 @@ h1 {
   padding-top: 1rem;
 }
 
-/* ............  Media@ ................ */
+/* .....................  Media@ ........................... */
 
 @media (max-width: 800px) {
   #house_cards {

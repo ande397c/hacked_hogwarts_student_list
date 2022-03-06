@@ -3,12 +3,10 @@ window.addEventListener("load", setup);
 
 let students;
 let families;
-
 let filteredStudents;
 let allStudents = [];
 let expelledStudents = [];
-
-let isHacked = false;
+let systemHasBeenHacked = false;
 
 const Student = {
   firstName: "",
@@ -22,7 +20,6 @@ const Student = {
   bloodStatus: "",
   inquisitorial: false,
   hacker: false,
-
   id: 0,
   expelled: false,
   prefect: false,
@@ -35,8 +32,9 @@ const settings = {
   direction: 1,
 };
 
+// ............................................. setup ..................................... //
+
 function setup() {
-  // Search for student
   document.querySelector("#clear_btn").addEventListener("click", () => {
     document.querySelector("#search_input").value = "";
   });
@@ -89,7 +87,7 @@ function setup() {
   getStudents();
 }
 
-// Get JSON data
+// ............................................. Get JSON data ..................................... //
 async function getStudents() {
   const url1 = "https://petlatkea.dk/2021/hogwarts/students.json";
   let data = await fetch(url1);
@@ -106,6 +104,8 @@ async function getFamilies() {
   getBloodStatus(families);
 }
 
+// ............................................. Get bloodStatus ..................................... //
+
 function getBloodStatus(families) {
   allStudents.forEach((student, index) => {
     if (families.half.includes(student.lastName)) {
@@ -117,6 +117,8 @@ function getBloodStatus(families) {
     }
   });
 }
+
+// ............................................. sorting function ..................................... //
 
 function sort(event) {
   // console.log("-", event);
@@ -164,6 +166,8 @@ function sort(event) {
 
   displayList(filteredStudents);
 }
+
+// ............................................. filter functions ..................................... //
 
 function filterStatus(statusOption) {
   let filterChoice = statusOption.target.getAttribute("data-filter");
@@ -227,6 +231,8 @@ function filterHouse(option) {
   displayList(filteredStudents);
 }
 
+// ............................................. display numbers and informations ..................................... //
+
 function displayListInformation() {
   console.log("displayListInformation");
 
@@ -240,6 +246,8 @@ function displayListInformation() {
   document.querySelector("#total_expelled").textContent = `${expelledStudents.length} student(s) have been expelled`;
   document.querySelector("#total_not_expelled").textContent = `${allStudents.length} student(s) have not been expelled`;
 }
+
+// ............................................. Get name data from json ..................................... //
 
 function updateObjects(students) {
   console.log("UpdateObjects");
@@ -311,14 +319,24 @@ function updateObjects(students) {
   displayList(allStudents);
 }
 
+// ............................................. Display list ..................................... //
 function displayList(allStudents) {
   document.querySelector("#total_displaying").textContent = `Currently showing ${allStudents.length} student(s)`;
+
+  if (allStudents.length === 0) {
+    document.querySelector("#error_empty").style.display = "block";
+    document.querySelector("#error_empty h2").innerHTML = "No students matched the search result";
+  } else {
+    document.querySelector("#error_empty").style.display = "none";
+  }
+
   document.querySelector("#students_table tbody").innerHTML = "";
 
   allStudents.forEach(displayStudent);
   displayListInformation();
 }
 
+// ............................................. Display student ..................................... //
 function displayStudent(studentInfo) {
   // console.log("displayStudent:", studentInfo);
   // create clone
@@ -355,6 +373,8 @@ function displayStudent(studentInfo) {
   return studentInfo;
 }
 
+// ............................................. Prefects ..................................... //
+
 function assignAsPrefect(studentInfo) {
   console.log(studentInfo);
   if (studentInfo.prefect) {
@@ -382,6 +402,8 @@ function tryToMakeStudentPrefect(selectedStudent) {
   console.log("prefects", prefects);
 }
 
+// ............................................. Inquisitorial ..................................... //
+
 function assignAsInquisitorial(studentInfo) {
   if (studentInfo.inquisitorial) {
     studentInfo.inquisitorial = false;
@@ -395,7 +417,6 @@ function assignAsInquisitorial(studentInfo) {
 
 function tryToMakeStudentInquisitorial(selectedStudent) {
   const inquisitors = allStudents.filter((studentInfo) => studentInfo.inquisitorial);
-  // const otherInquisitor = inquisitors.filter((studentInfo) => studentInfo.house === selectedStudent.house);
 
   if (selectedStudent.bloodStatus != "pure-blood" && selectedStudent.house != "Slytherin") {
     console.log("Only pure-blooded students from house Slytherin can be added!");
@@ -409,6 +430,8 @@ function tryToMakeStudentInquisitorial(selectedStudent) {
   console.log(inquisitors);
 }
 
+// ............................................. Popups ..................................... //
+
 function closePopUp() {
   document.querySelector(".pop_up").style.display = "none";
   document.querySelector(".pop_up_ins").style.display = "none";
@@ -416,6 +439,8 @@ function closePopUp() {
 
   displayListInformation();
 }
+
+// ............................................. user feedback ..................................... //
 
 function displayMessage(details) {
   const message = document.querySelector("#messeage_board");
@@ -428,6 +453,8 @@ function displayMessage(details) {
     message.className = "cta hide";
   }
 }
+
+// ............................................. Detailed student popup ..................................... //
 
 function showDetails(details) {
   //console.log("showDetails", details);
@@ -504,6 +531,7 @@ function showDetails(details) {
   return details;
 }
 
+// ............................................. Get student status ..................................... //
 function checkStatus(selectedStudent) {
   // let studentDetails = showDetails(info);
   console.log("Student Details:", selectedStudent);
@@ -530,24 +558,38 @@ function checkStatus(selectedStudent) {
   }
 }
 
-function searchStudent(evt) {
-  console.log("searchStudent");
+// ............................................. Search function ..................................... //
 
-  // write to the list with only those elemnts in the allAnimals array that has properties containing the search frase
+function searchStudent(evt) {
+  // write to the list with only those elemnts in the filteredStudents array that has properties containing the search frase
   displayList(
-    allStudents.filter((elm) => {
+    filteredStudents.filter((elm) => {
       // comparing in uppercase so that m is the same as M
-      return elm.firstName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.lastName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.house.toUpperCase().includes(evt.target.value.toUpperCase());
+
+      if (evt.target.value.includes(" ")) {
+        let searchName = evt.target.value.split(" ");
+        let firstName = searchName[0];
+        let lastName = searchName[1] || "";
+
+        if (searchName.length < 3) {
+          return (
+            (elm.firstName.toUpperCase().includes(firstName.toUpperCase()) && elm.lastName.toUpperCase().includes(lastName.toUpperCase())) ||
+            (elm.firstName.toUpperCase().includes(lastName.toUpperCase()) && elm.lastName.toUpperCase().includes(firstName.toUpperCase()))
+          );
+        } else {
+          return;
+        }
+      } else {
+        return elm.firstName.toUpperCase().includes(evt.target.value.toUpperCase()) || elm.lastName.toUpperCase().includes(evt.target.value.toUpperCase());
+      }
     })
   );
 }
 
-// Danger zone!
+// ............................................. Danger zone (hack the system) ..................................... //
 
 function hackTheSystem() {
   console.log("system is hacked");
-
-  isHacked === true;
 
   const me = {
     firstName: "Anders",
@@ -565,7 +607,14 @@ function hackTheSystem() {
     hacker: true,
   };
 
-  allStudents.push(me);
+  if (systemHasBeenHacked === true) {
+    console.log("System can't be hacked multiple times!");
+  } else {
+    systemHasBeenHacked = true;
+    allStudents.push(me);
+    setTimeout(removeInquisitors, 3000);
+    messUpBloodStatus();
+  }
 
   function messUpBloodStatus() {
     allStudents.forEach((student) => {
@@ -589,10 +638,6 @@ function hackTheSystem() {
     displayList(allStudents);
     errorBlood();
   }
-
-  setTimeout(removeInquisitors, 3000);
-
-  messUpBloodStatus();
 }
 
 function errorBlood() {
